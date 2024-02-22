@@ -1,3 +1,7 @@
+use anyrust::Any;
+
 fn main() {
-    println!("Hello, world!");
+    let some = Any::new(5);
+
+    println!("Hello, world!: {some}");
 }
