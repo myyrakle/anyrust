@@ -384,6 +384,86 @@ impl ToMap for Map {
     }
 }
 
+// ToBoolean 트레잇 구현
+
+impl ToBoolean for i8 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for i16 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for i32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for i64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for u8 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for u16 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for u32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for u64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
+impl ToBoolean for f32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0.0
+    }
+}
+
+impl ToBoolean for f64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0.0
+    }
+}
+
+impl ToBoolean for String {
+    fn to_boolean(&self) -> bool {
+        self.parse().unwrap_or(false)
+    }
+}
+
+impl ToBoolean for bool {
+    fn to_boolean(&self) -> bool {
+        *self
+    }
+}
+
+impl ToBoolean for Array {
+    fn to_boolean(&self) -> bool {
+        true
+    }
+}
+
 impl ToBoolean for Map {
     fn to_boolean(&self) -> bool {
         true
