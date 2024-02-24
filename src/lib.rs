@@ -25,6 +25,11 @@ type Array = Vec<Any>;
 #[derive(Debug, Clone)]
 struct Map(std::collections::HashMap<Any, Any>);
 
+// 캐스팅용 트레잇: 특정 타입이 모든 타입으로 캐스팅할 수 있도록 정의합니다.
+pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
+
+impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr> AutoCast for T {}
+
 // 캐스팅용 트레잇: 정수로 캐스팅될때 어떻게 변환될지를 정의합니다.
 pub trait ToInteger {
     fn to_integer(&self) -> i64;
@@ -152,11 +157,7 @@ where
     }
 }
 
-impl<K, V> ToInteger for std::collections::HashMap<K, V>
-where
-    K: AutoCast,
-    V: AutoCast,
-{
+impl ToInteger for Map {
     fn to_integer(&self) -> i64 {
         0 as i64
     }
@@ -275,6 +276,8 @@ impl ToStr for Map {
         result
     }
 }
+
+// ToFloat 트레잇 구현
 
 impl ToFloat for i8 {
     fn to_float(&self) -> f64 {
@@ -624,8 +627,6 @@ impl ToBoolean for Map {
         true
     }
 }
-
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
 #[derive(Debug)]
 pub struct Any {
