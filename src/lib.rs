@@ -6,6 +6,7 @@ use std::{
 
 use dyn_clone::DynClone;
 
+// 기본 트레잇
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast
 {
@@ -16,8 +17,53 @@ impl<T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + Aut
 {
 }
 
+// 배열 타입
+type Array = Vec<Any>;
+
+// 맵 타입
+#[derive(Debug, Clone)]
+struct Map(std::collections::HashMap<Any, Any>);
+
+// 캐스팅용 트레잇: 정수로 캐스팅될때 어떻게 변환될지를 정의합니다.
 pub trait ToInteger {
     fn to_integer(&self) -> i64;
+}
+
+// 캐스팅용 트레잇: 실수로 캐스팅될때 어떻게 변환될지를 정의합니다.
+pub trait ToFloat {
+    fn to_float(&self) -> f64;
+}
+
+// 캐스팅용 트레잇: 문자열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+pub trait ToStr {
+    fn to_str(&self) -> String;
+}
+
+// 캐스팅용 트레잇: 배열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+pub trait ToArray {
+    fn to_array(&self) -> Array;
+}
+
+// 캐스팅용 트레잇: 맵으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+pub trait ToMap {
+    fn to_map(&self) -> Map;
+}
+
+// 캐스팅용 트레잇: 불리언으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+pub trait ToBoolean {
+    fn to_boolean(&self) -> bool;
+}
+
+impl Display for Map {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
+impl Display for Any {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.data)
+    }
 }
 
 impl ToInteger for i8 {
@@ -115,15 +161,84 @@ where
     }
 }
 
-pub trait ToString {
-    fn to_string(&self) -> String;
+// ToStr 트레잇 구현
+impl ToStr for i8 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
 }
 
-impl<T> ToString for Vec<T>
+impl ToStr for i16 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for i32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for i64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for u8 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for u16 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for u32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for u64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for f32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for f64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToStr for String {
+    fn to_str(&self) -> String {
+        self.clone()
+    }
+}
+
+impl ToStr for bool {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl<T> ToStr for Vec<T>
 where
     T: AutoCast,
 {
-    fn to_string(&self) -> String {
+    fn to_str(&self) -> String {
         let mut result = String::from("[");
 
         for (i, item) in self.iter().enumerate() {
@@ -131,7 +246,7 @@ where
                 result.push_str(", ");
             }
 
-            result.push_str(&item.to_string());
+            result.push_str(&item.to_str());
         }
 
         result.push_str("]");
@@ -140,15 +255,11 @@ where
     }
 }
 
-impl<K, V> ToString for std::collections::HashMap<K, V>
-where
-    K: AutoCast,
-    V: AutoCast,
-{
-    fn to_string(&self) -> String {
+impl ToStr for Map {
+    fn to_str(&self) -> String {
         let mut result = String::from("{");
 
-        for (i, (key, value)) in self.iter().enumerate() {
+        for (i, (key, value)) in self.0.iter().enumerate() {
             if i > 0 {
                 result.push_str(", ");
             }
@@ -162,10 +273,6 @@ where
 
         result
     }
-}
-
-pub trait ToFloat {
-    fn to_float(&self) -> f64;
 }
 
 impl ToFloat for i8 {
@@ -253,29 +360,37 @@ where
     }
 }
 
-impl<K, V> ToFloat for std::collections::HashMap<K, V>
-where
-    K: AutoCast,
-    V: AutoCast,
-{
+impl ToFloat for Map {
     fn to_float(&self) -> f64 {
         0 as f64
     }
 }
 
-pub trait ToArray {
-    fn to_array(&self) -> Vec<Any>;
+impl ToArray for Array {
+    fn to_array(&self) -> Array {
+        self.clone()
+    }
 }
 
-pub trait ToMap {
-    fn to_map(&self) -> std::collections::HashMap<Any, Any>;
+impl ToArray for Map {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.clone())]
+    }
 }
 
-pub trait ToBoolean {
-    fn to_boolean(&self) -> bool;
+impl ToMap for Map {
+    fn to_map(&self) -> Map {
+        self.clone()
+    }
 }
 
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToString {}
+impl ToBoolean for Map {
+    fn to_boolean(&self) -> bool {
+        true
+    }
+}
+
+pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
 #[derive(Debug)]
 pub struct Any {
@@ -289,12 +404,6 @@ impl Clone for Any {
             type_id: self.type_id,
             data: dyn_clone::clone_box(&*self.data),
         }
-    }
-}
-
-impl Display for Any {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.data)
     }
 }
 
