@@ -23,7 +23,7 @@ type Array = Vec<Any>;
 
 // 맵 타입
 #[derive(Debug, Clone)]
-struct Map(std::collections::HashMap<Any, Any>);
+pub struct Map(std::collections::HashMap<Any, Any>);
 
 // 캐스팅용 트레잇: 특정 타입이 모든 타입으로 캐스팅할 수 있도록 정의합니다.
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
