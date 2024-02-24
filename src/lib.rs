@@ -367,6 +367,80 @@ impl ToFloat for Map {
     }
 }
 
+// ToArray 트레잇 구현
+
+impl ToArray for i8 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for i16 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for i32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for i64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for u8 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for u16 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for u32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for u64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for f32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for f64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
+impl ToArray for String {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.clone())]
+    }
+}
+
+impl ToArray for bool {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)]
+    }
+}
+
 impl ToArray for Array {
     fn to_array(&self) -> Array {
         self.clone()
