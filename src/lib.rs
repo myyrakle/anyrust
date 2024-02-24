@@ -1,10 +1,41 @@
-use std::fmt::{Debug, Display};
+use std::{
+    fmt::{Debug, Display},
+    ops::Add,
+};
 
 use dyn_clone::DynClone;
 
-pub trait Anyable: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display {}
+pub trait Anyable:
+    std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast
+{
+}
 
-impl<T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display> Anyable for T {}
+impl<T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast> Anyable
+    for T
+{
+}
+
+pub trait ToInteger {
+    fn to_integer(&self) -> i64;
+}
+
+pub trait ToFloat {
+    fn to_float(&self) -> f64;
+}
+
+pub trait ToArray {
+    fn to_array(&self) -> Vec<Any>;
+}
+
+pub trait ToMap {
+    fn to_map(&self) -> std::collections::HashMap<String, Any>;
+}
+
+pub trait ToBoolean {
+    fn to_boolean(&self) -> bool;
+}
+
+pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToString {}
 
 #[derive(Debug)]
 pub struct Any {
@@ -51,6 +82,34 @@ impl Any {
             unsafe { Some(&mut *(self.data.as_mut() as *mut dyn std::any::Any as *mut T)) }
         } else {
             None
+        }
+    }
+}
+
+impl Add for Any {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        if self.type_id == other.type_id {
+            match self.type_id {
+                std::any::TypeId::of::<i32>() => {
+                    let data = self.data.downcast_ref::<i32>().unwrap()
+                        + other.data.downcast_ref::<i32>().unwrap();
+                    Self {
+                        type_id: self.type_id,
+                        data: Box::new(data),
+                    }
+                }
+                _ => panic!("Type mismatch"),
+            }
+
+            let data = self.data + other.data;
+            Self {
+                type_id: self.type_id,
+                data: Box::new(data),
+            }
+        } else {
+            panic!("Type mismatch");
         }
     }
 }
