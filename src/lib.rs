@@ -168,6 +168,101 @@ pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
 
+impl ToFloat for i8 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for i16 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for i32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for i64 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for u8 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for u16 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for u32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for u64 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for f32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToFloat for f64 {
+    fn to_float(&self) -> f64 {
+        *self
+    }
+}
+
+impl ToFloat for String {
+    fn to_float(&self) -> f64 {
+        self.parse().unwrap()
+    }
+}
+
+impl ToFloat for bool {
+    fn to_float(&self) -> f64 {
+        if *self {
+            1.0
+        } else {
+            0.0
+        }
+    }
+}
+
+impl<T> ToFloat for Vec<T>
+where
+    T: AutoCast,
+{
+    fn to_float(&self) -> f64 {
+        0 as f64
+    }
+}
+
+impl<K, V> ToFloat for std::collections::HashMap<K, V>
+where
+    K: AutoCast,
+    V: AutoCast,
+{
+    fn to_float(&self) -> f64 {
+        0 as f64
+    }
+}
+
 pub trait ToArray {
     fn to_array(&self) -> Vec<Any>;
 }
