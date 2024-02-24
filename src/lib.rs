@@ -1,5 +1,6 @@
 use std::{
     any::TypeId,
+    collections::HashMap,
     fmt::{Debug, Display},
     ops::Add,
 };
@@ -375,6 +376,86 @@ impl ToArray for Array {
 impl ToArray for Map {
     fn to_array(&self) -> Array {
         vec![Any::new(self.clone())]
+    }
+}
+
+// ToMap 트레잇 구현
+
+impl ToMap for i8 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for i16 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for i32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for i64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for u8 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for u16 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for u32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for u64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for f32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for f64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for String {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for bool {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for Array {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
     }
 }
 
