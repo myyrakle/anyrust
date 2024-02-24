@@ -1,4 +1,5 @@
 use std::{
+    any::TypeId,
     fmt::{Debug, Display},
     ops::Add,
 };
@@ -19,6 +20,105 @@ pub trait ToInteger {
     fn to_integer(&self) -> i64;
 }
 
+impl ToInteger for i8 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for i16 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for i32 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for i64 {
+    fn to_integer(&self) -> i64 {
+        *self
+    }
+}
+
+impl ToInteger for u8 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for u16 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for u32 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for u64 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for f32 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for f64 {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToInteger for String {
+    fn to_integer(&self) -> i64 {
+        self.parse().unwrap()
+    }
+}
+
+impl ToInteger for bool {
+    fn to_integer(&self) -> i64 {
+        if *self {
+            1
+        } else {
+            0
+        }
+    }
+}
+
+impl<T> ToInteger for Vec<T>
+where
+    T: AutoCast,
+{
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+impl<K, V> ToInteger for std::collections::HashMap<K, V>
+where
+    K: AutoCast,
+    V: AutoCast,
+{
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+pub trait ToString {
+    fn to_string(&self) -> String;
+}
+
 pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
@@ -28,7 +128,7 @@ pub trait ToArray {
 }
 
 pub trait ToMap {
-    fn to_map(&self) -> std::collections::HashMap<String, Any>;
+    fn to_map(&self) -> std::collections::HashMap<Any, Any>;
 }
 
 pub trait ToBoolean {
@@ -92,22 +192,11 @@ impl Add for Any {
     fn add(self, other: Self) -> Self {
         if self.type_id == other.type_id {
             match self.type_id {
-                std::any::TypeId::of::<i32>() => {
-                    let data = self.data.downcast_ref::<i32>().unwrap()
-                        + other.data.downcast_ref::<i32>().unwrap();
-                    Self {
-                        type_id: self.type_id,
-                        data: Box::new(data),
-                    }
-                }
+                type_id => if type_id == TypeId::of::<i32>() {},
                 _ => panic!("Type mismatch"),
             }
 
-            let data = self.data + other.data;
-            Self {
-                type_id: self.type_id,
-                data: Box::new(data),
-            }
+            unimplemented!()
         } else {
             panic!("Type mismatch");
         }
