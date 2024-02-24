@@ -119,6 +119,51 @@ pub trait ToString {
     fn to_string(&self) -> String;
 }
 
+impl<T> ToString for Vec<T>
+where
+    T: AutoCast,
+{
+    fn to_string(&self) -> String {
+        let mut result = String::from("[");
+
+        for (i, item) in self.iter().enumerate() {
+            if i > 0 {
+                result.push_str(", ");
+            }
+
+            result.push_str(&item.to_string());
+        }
+
+        result.push_str("]");
+
+        result
+    }
+}
+
+impl<K, V> ToString for std::collections::HashMap<K, V>
+where
+    K: AutoCast,
+    V: AutoCast,
+{
+    fn to_string(&self) -> String {
+        let mut result = String::from("{");
+
+        for (i, (key, value)) in self.iter().enumerate() {
+            if i > 0 {
+                result.push_str(", ");
+            }
+
+            result.push_str(&key.to_string());
+            result.push_str(": ");
+            result.push_str(&value.to_string());
+        }
+
+        result.push_str("}");
+
+        result
+    }
+}
+
 pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
