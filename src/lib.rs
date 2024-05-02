@@ -676,20 +676,20 @@ impl Any {
 }
 
 lazy_static::lazy_static! {
-    static ref I8: TypeId = TypeId::of::<i8>();
-    static ref I16: TypeId = TypeId::of::<i16>();
-    static ref I32: TypeId = TypeId::of::<i32>();
-    static ref I64: TypeId = TypeId::of::<i64>();
-    static ref U8: TypeId = TypeId::of::<u8>();
-    static ref U16: TypeId = TypeId::of::<u16>();
-    static ref U32: TypeId = TypeId::of::<u32>();
-    static ref U64: TypeId = TypeId::of::<u64>();
-    static ref F32: TypeId = TypeId::of::<f32>();
-    static ref F64: TypeId = TypeId::of::<f64>();
-    static ref STR: TypeId = TypeId::of::<String>();
-    static ref BOOL: TypeId = TypeId::of::<bool>();
-    static ref ARRAY: TypeId = TypeId::of::<Array>();
-    static ref MAP: TypeId = TypeId::of::<Map>();
+    pub static ref I8: TypeId = TypeId::of::<i8>();
+    pub static ref I16: TypeId = TypeId::of::<i16>();
+    pub static ref I32: TypeId = TypeId::of::<i32>();
+    pub static ref I64: TypeId = TypeId::of::<i64>();
+    pub static ref U8: TypeId = TypeId::of::<u8>();
+    pub static ref U16: TypeId = TypeId::of::<u16>();
+    pub static ref U32: TypeId = TypeId::of::<u32>();
+    pub static ref U64: TypeId = TypeId::of::<u64>();
+    pub static ref F32: TypeId = TypeId::of::<f32>();
+    pub static ref F64: TypeId = TypeId::of::<f64>();
+    pub static ref STR: TypeId = TypeId::of::<String>();
+    pub static ref BOOL: TypeId = TypeId::of::<bool>();
+    pub static ref ARRAY: TypeId = TypeId::of::<Array>();
+    pub static ref MAP: TypeId = TypeId::of::<Map>();
 }
 
 impl Add for Any {
@@ -698,14 +698,72 @@ impl Add for Any {
     fn add(self, other: Self) -> Self {
         if self.type_id == other.type_id {
             match self.type_id {
-                I8 => {
+                type_id if type_id == *I8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a + b)
                 }
-                _ => {}
+                type_id if type_id == *I16 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *I32 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *I64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *U8 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *U16 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *U32 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *F32 => {
+                    let a = self.data.to_float();
+                    let b = other.data.to_float();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *F64 => {
+                    let a = self.data.to_float();
+                    let b = other.data.to_float();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *STR => {
+                    let mut a = self.data.to_string();
+                    let b = other.data.to_string();
+                    a.push_str(b.as_str());
+                    Any::new(a)
+                }
+                type_id if type_id == *BOOL => {
+                    let a = self.data.to_boolean();
+                    let b = other.data.to_boolean();
+                    Any::new(a || b)
+                }
+                // TODO: ARRAY, MAP
+                _ => {
+                    unimplemented!()
+                }
             }
-            unimplemented!()
         } else {
             panic!("Type mismatch");
         }
