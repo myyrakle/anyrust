@@ -5,15 +5,18 @@ use std::{
     ops::Add,
 };
 
-use dyn_clone::DynClone;
+use dyn_clone::{clone_trait_object, DynClone};
 // 기본 트레잇
 pub trait Anyable:
-    std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast
+    std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone
 {
 }
 
-impl<T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast> Anyable
-    for T
+clone_trait_object!(Anyable);
+
+impl<
+        T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone,
+    > Anyable for T
 {
 }
 
@@ -22,7 +25,7 @@ pub type Null = ();
 pub const null: Null = ();
 
 // 배열 타입
-type Array = Vec<Any>;
+pub type Array = Vec<Any>;
 
 // 맵 타입
 #[derive(Debug, Clone)]
@@ -141,6 +144,12 @@ impl ToInteger for String {
     }
 }
 
+impl ToInteger for &str {
+    fn to_integer(&self) -> i64 {
+        self.parse().unwrap()
+    }
+}
+
 impl ToInteger for bool {
     fn to_integer(&self) -> i64 {
         if *self {
@@ -161,6 +170,12 @@ where
 }
 
 impl ToInteger for Map {
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+impl ToInteger for Null {
     fn to_integer(&self) -> i64 {
         0 as i64
     }
@@ -233,6 +248,12 @@ impl ToStr for String {
     }
 }
 
+impl ToStr for &str {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
 impl ToStr for bool {
     fn to_str(&self) -> String {
         self.to_string()
@@ -280,8 +301,13 @@ impl ToStr for Map {
     }
 }
 
-// ToFloat 트레잇 구현
+impl ToStr for Null {
+    fn to_str(&self) -> String {
+        String::from("null")
+    }
+}
 
+// ToFloat 트레잇 구현
 impl ToFloat for i8 {
     fn to_float(&self) -> f64 {
         *self as f64
@@ -343,6 +369,12 @@ impl ToFloat for f64 {
 }
 
 impl ToFloat for String {
+    fn to_float(&self) -> f64 {
+        self.parse().unwrap()
+    }
+}
+
+impl ToFloat for &str {
     fn to_float(&self) -> f64 {
         self.parse().unwrap()
     }
@@ -441,6 +473,12 @@ impl ToArray for String {
     }
 }
 
+impl ToArray for &str {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.to_string())]
+    }
+}
+
 impl ToArray for bool {
     fn to_array(&self) -> Array {
         vec![Any::new(*self)]
@@ -522,6 +560,12 @@ impl ToMap for f64 {
 }
 
 impl ToMap for String {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToMap for &str {
     fn to_map(&self) -> Map {
         Map(HashMap::new())
     }
@@ -613,6 +657,12 @@ impl ToBoolean for String {
     }
 }
 
+impl ToBoolean for &str {
+    fn to_boolean(&self) -> bool {
+        self.parse().unwrap_or(false)
+    }
+}
+
 impl ToBoolean for bool {
     fn to_boolean(&self) -> bool {
         *self
@@ -689,7 +739,8 @@ lazy_static::lazy_static! {
     pub static ref U64: TypeId = TypeId::of::<u64>();
     pub static ref F32: TypeId = TypeId::of::<f32>();
     pub static ref F64: TypeId = TypeId::of::<f64>();
-    pub static ref STR: TypeId = TypeId::of::<String>();
+    pub static ref STRING: TypeId = TypeId::of::<String>();
+    pub static ref STR: TypeId = TypeId::of::<&str>();
     pub static ref BOOL: TypeId = TypeId::of::<bool>();
     pub static ref ARRAY: TypeId = TypeId::of::<Array>();
     pub static ref MAP: TypeId = TypeId::of::<Map>();
@@ -750,6 +801,12 @@ impl Add for Any {
                     let a = self.data.to_float();
                     let b = other.data.to_float();
                     Any::new(a + b)
+                }
+                type_id if type_id == *STRING => {
+                    let mut a = self.data.to_string();
+                    let b = other.data.to_string();
+                    a.push_str(b.as_str());
+                    Any::new(a)
                 }
                 type_id if type_id == *STR => {
                     let mut a = self.data.to_string();
