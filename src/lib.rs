@@ -654,21 +654,42 @@ impl Any {
         }
     }
 
-    pub fn downcast_ref<T: 'static>(&self) -> Option<&T> {
-        if self.type_id == std::any::TypeId::of::<T>() {
-            unsafe { Some(&*(self.data.as_ref() as *const dyn std::any::Any as *const T)) }
-        } else {
-            None
-        }
+    pub fn type_id(&self) -> TypeId {
+        self.type_id
     }
 
-    pub fn downcast_mut<T: 'static>(&mut self) -> Option<&mut T> {
-        if self.type_id == std::any::TypeId::of::<T>() {
-            unsafe { Some(&mut *(self.data.as_mut() as *mut dyn std::any::Any as *mut T)) }
-        } else {
-            None
-        }
-    }
+    // pub fn downcast_ref<T: 'static>(&self) -> Option<&T> {
+    //     if self.type_id == std::any::TypeId::of::<T>() {
+    //         unsafe { Some(&*(self.data.as_ref() as *const dyn std::any::Any as *const T)) }
+    //     } else {
+    //         None
+    //     }
+    // }
+
+    // pub fn downcast_mut<T: 'static>(&mut self) -> Option<&mut T> {
+    //     if self.type_id == std::any::TypeId::of::<T>() {
+    //         unsafe { Some(&mut *(self.data.as_mut() as *mut dyn std::any::Any as *mut T)) }
+    //     } else {
+    //         None
+    //     }
+    // }
+}
+
+lazy_static::lazy_static! {
+    static ref I8: TypeId = TypeId::of::<i8>();
+    static ref I16: TypeId = TypeId::of::<i16>();
+    static ref I32: TypeId = TypeId::of::<i32>();
+    static ref I64: TypeId = TypeId::of::<i64>();
+    static ref U8: TypeId = TypeId::of::<u8>();
+    static ref U16: TypeId = TypeId::of::<u16>();
+    static ref U32: TypeId = TypeId::of::<u32>();
+    static ref U64: TypeId = TypeId::of::<u64>();
+    static ref F32: TypeId = TypeId::of::<f32>();
+    static ref F64: TypeId = TypeId::of::<f64>();
+    static ref STR: TypeId = TypeId::of::<String>();
+    static ref BOOL: TypeId = TypeId::of::<bool>();
+    static ref ARRAY: TypeId = TypeId::of::<Array>();
+    static ref MAP: TypeId = TypeId::of::<Map>();
 }
 
 impl Add for Any {
@@ -677,10 +698,13 @@ impl Add for Any {
     fn add(self, other: Self) -> Self {
         if self.type_id == other.type_id {
             match self.type_id {
-                type_id => if type_id == TypeId::of::<i32>() {},
-                _ => panic!("Type mismatch"),
+                I8 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                _ => {}
             }
-
             unimplemented!()
         } else {
             panic!("Type mismatch");
