@@ -6,7 +6,6 @@ use std::{
 };
 
 use dyn_clone::DynClone;
-
 // 기본 트레잇
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast
@@ -17,6 +16,10 @@ impl<T: std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + Aut
     for T
 {
 }
+
+pub type Null = ();
+#[allow(non_upper_case_globals)]
+pub const null: Null = ();
 
 // 배열 타입
 type Array = Vec<Any>;
