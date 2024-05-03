@@ -20,9 +20,10 @@ impl<
 {
 }
 
-pub type Null = ();
+#[derive(Debug, Clone)]
+pub struct Null;
 #[allow(non_upper_case_globals)]
-pub const null: Null = ();
+pub const null: Null = Null {};
 
 // 배열 타입
 #[derive(Debug, Clone)]
@@ -733,6 +734,12 @@ impl ToBoolean for Null {
         false
     }
 }
+
+impl Display for Null {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "null")
+    }
+}
 // ---------------
 
 #[derive(Debug)]
@@ -798,13 +805,16 @@ lazy_static::lazy_static! {
     pub static ref BOOL: TypeId = TypeId::of::<bool>();
     pub static ref ARRAY: TypeId = TypeId::of::<Array>();
     pub static ref MAP: TypeId = TypeId::of::<Map>();
+    pub static ref NULL: TypeId = TypeId::of::<Null>();
 }
 
 impl Add for Any {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
-        if self.type_id == *STRING || other.type_id == *STRING {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(null)
+        } else if self.type_id == *STRING || other.type_id == *STRING {
             let a = self.data.to_string();
             let b = other.data.to_string();
             Any::new(a + &b)
