@@ -25,7 +25,14 @@ pub type Null = ();
 pub const null: Null = ();
 
 // 배열 타입
-pub type Array = Vec<Any>;
+#[derive(Debug, Clone)]
+pub struct Array(Vec<Any>);
+
+impl From<Vec<Any>> for Array {
+    fn from(vec: Vec<Any>) -> Self {
+        Self(vec)
+    }
+}
 
 // 맵 타입
 #[derive(Debug, Clone)]
@@ -75,6 +82,66 @@ impl Display for Map {
 impl Display for Any {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.data)
+    }
+}
+
+// array 트레잇 구현
+
+impl Display for Array {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut result = String::from("[");
+        for (i, item) in self.0.iter().enumerate() {
+            if i > 0 {
+                result.push_str(", ");
+            }
+            result.push_str(&item.to_string());
+        }
+        result.push_str("]");
+        write!(f, "{}", result)
+    }
+}
+
+impl ToArray for Array {
+    fn to_array(&self) -> Array {
+        self.clone()
+    }
+}
+
+impl ToMap for Array {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for Array {
+    fn to_boolean(&self) -> bool {
+        true
+    }
+}
+
+impl ToInteger for Array {
+    fn to_integer(&self) -> i64 {
+        0
+    }
+}
+
+impl ToFloat for Array {
+    fn to_float(&self) -> f64 {
+        0.0
+    }
+}
+
+impl ToStr for Array {
+    fn to_str(&self) -> String {
+        let mut result = String::from("[");
+        for (i, item) in self.0.iter().enumerate() {
+            if i > 0 {
+                result.push_str(", ");
+            }
+            result.push_str(&item.to_string());
+        }
+        result.push_str("]");
+        result
     }
 }
 
@@ -409,91 +476,85 @@ impl ToFloat for Map {
 
 impl ToArray for i8 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for i16 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for i32 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for i64 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for u8 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for u16 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for u32 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for u64 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for f32 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for f64 {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for String {
     fn to_array(&self) -> Array {
-        vec![Any::new(self.clone())]
+        vec![Any::new(self.clone())].into()
     }
 }
 
 impl ToArray for &str {
     fn to_array(&self) -> Array {
-        vec![Any::new(self.to_string())]
+        vec![Any::new(self.to_string())].into()
     }
 }
 
 impl ToArray for bool {
     fn to_array(&self) -> Array {
-        vec![Any::new(*self)]
-    }
-}
-
-impl ToArray for Array {
-    fn to_array(&self) -> Array {
-        self.clone()
+        vec![Any::new(*self)].into()
     }
 }
 
 impl ToArray for Map {
     fn to_array(&self) -> Array {
-        vec![Any::new(self.clone())]
+        vec![Any::new(self.clone())].into()
     }
 }
 
@@ -572,12 +633,6 @@ impl ToMap for &str {
 }
 
 impl ToMap for bool {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for Array {
     fn to_map(&self) -> Map {
         Map(HashMap::new())
     }
@@ -669,12 +724,6 @@ impl ToBoolean for bool {
     }
 }
 
-impl ToBoolean for Array {
-    fn to_boolean(&self) -> bool {
-        true
-    }
-}
-
 impl ToBoolean for Map {
     fn to_boolean(&self) -> bool {
         true
@@ -750,7 +799,51 @@ impl Add for Any {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
-        if self.type_id == other.type_id {
+        if self.type_id == *STRING || other.type_id == *STRING {
+            let a = self.data.to_string();
+            let b = other.data.to_string();
+            Any::new(a + &b)
+        } else if self.type_id == *STR || other.type_id == *STR {
+            let a = self.data.to_string();
+            let b = other.data.to_string();
+            Any::new(a + &b)
+        } else if self.type_id == *F64 || other.type_id == *F64 {
+            let a: f64 = self.data.to_float();
+            let b = other.data.to_float();
+            Any::new(a + b)
+        } else if self.type_id == *I64 || other.type_id == *I64 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *I32 || other.type_id == *I32 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *I16 || other.type_id == *I16 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *I8 || other.type_id == *I8 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *U64 || other.type_id == *U64 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *U32 || other.type_id == *U32 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *U16 || other.type_id == *U16 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == *U8 || other.type_id == *U8 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a + b)
+        } else if self.type_id == other.type_id {
             match self.type_id {
                 type_id if type_id == *I8 => {
                     let a = self.data.to_integer();
@@ -820,12 +913,23 @@ impl Add for Any {
                     Any::new(a || b)
                 }
                 // TODO: ARRAY, MAP
+                type_id if type_id == *ARRAY => {
+                    let a = self.data.to_array();
+                    let b = other.data.to_array();
+                    let mut result = a.clone();
+                    result.0.extend(b.0.clone());
+                    Any::new(result)
+                }
                 _ => {
-                    unimplemented!()
+                    let a = self.data.to_string();
+                    let b = other.data.to_string();
+                    Any::new(a + &b)
                 }
             }
         } else {
-            panic!("Type mismatch");
+            let a = self.data.to_string();
+            let b = other.data.to_string();
+            Any::new(a + &b)
         }
     }
 }
