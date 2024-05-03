@@ -709,6 +709,30 @@ impl ToStr for Null {
         String::from("null")
     }
 }
+
+impl ToFloat for Null {
+    fn to_float(&self) -> f64 {
+        0 as f64
+    }
+}
+
+impl ToArray for Null {
+    fn to_array(&self) -> Array {
+        vec![].into()
+    }
+}
+
+impl ToMap for Null {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for Null {
+    fn to_boolean(&self) -> bool {
+        false
+    }
+}
 // ---------------
 
 #[derive(Debug)]
