@@ -86,7 +86,6 @@ impl Display for Any {
 }
 
 // array 트레잇 구현
-
 impl Display for Array {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut result = String::from("[");
@@ -145,78 +144,463 @@ impl ToStr for Array {
     }
 }
 
+// i8 트레잇 구현
 impl ToInteger for i8 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for i8 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for i8 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for i8 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for i8 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for i8 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// i16 트레잇 구현
 impl ToInteger for i16 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for i16 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for i16 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for i16 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for i16 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for i16 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// i32 트레잇 구현
 impl ToInteger for i32 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for i32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for i32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for i32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for i32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for i32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// i64 트레잇 구현
 impl ToInteger for i64 {
     fn to_integer(&self) -> i64 {
         *self
     }
 }
 
+impl ToStr for i64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for i64 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for i64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for i64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for i64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// u8 트레잇 구현
 impl ToInteger for u8 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for u8 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for u8 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for u8 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for u8 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for u8 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// u16 트레잇 구현
 impl ToInteger for u16 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for u16 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for u16 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for u16 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for u16 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for u16 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// u32 트레잇 구현
 impl ToInteger for u32 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for u32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for u32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for u32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for u32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for u32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// u64 트레잇 구현
 impl ToInteger for u64 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for u64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for u64 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for u64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for u64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for u64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// f32 트레잇 구현
 impl ToInteger for f32 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for f32 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for f32 {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for f32 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for f32 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for f32 {
+    fn to_boolean(&self) -> bool {
+        *self != 0.0
+    }
+}
+// ---------------
+
+// f64 트레잇 구현
 impl ToInteger for f64 {
     fn to_integer(&self) -> i64 {
         *self as i64
     }
 }
 
+impl ToStr for f64 {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for f64 {
+    fn to_float(&self) -> f64 {
+        *self
+    }
+}
+
+impl ToArray for f64 {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for f64 {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for f64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0.0
+    }
+}
+// ---------------
+
+// 문자열 트레잇 구현
 impl ToInteger for String {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
     }
 }
 
+impl ToStr for String {
+    fn to_str(&self) -> String {
+        self.clone()
+    }
+}
+
+impl ToFloat for String {
+    fn to_float(&self) -> f64 {
+        self.parse().unwrap()
+    }
+}
+
+impl ToArray for String {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.clone())].into()
+    }
+}
+
+impl ToMap for String {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for String {
+    fn to_boolean(&self) -> bool {
+        self.parse().unwrap_or(false)
+    }
+}
+// ---------------
+
+// 문자열 슬라이스 트레잇 구현
 impl ToInteger for &str {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
     }
 }
 
+impl ToStr for &str {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for &str {
+    fn to_float(&self) -> f64 {
+        self.parse().unwrap()
+    }
+}
+
+impl ToArray for &str {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.to_string())].into()
+    }
+}
+
+impl ToMap for &str {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for &str {
+    fn to_boolean(&self) -> bool {
+        self.parse().unwrap_or(false)
+    }
+}
+// ---------------
+
+// 불리언 트레잇 구현
 impl ToInteger for bool {
     fn to_integer(&self) -> i64 {
         if *self {
@@ -227,124 +611,45 @@ impl ToInteger for bool {
     }
 }
 
-impl<T> ToInteger for Vec<T>
-where
-    T: AutoCast,
-{
-    fn to_integer(&self) -> i64 {
-        0 as i64
-    }
-}
-
-impl ToInteger for Map {
-    fn to_integer(&self) -> i64 {
-        0 as i64
-    }
-}
-
-impl ToInteger for Null {
-    fn to_integer(&self) -> i64 {
-        0 as i64
-    }
-}
-
-// ToStr 트레잇 구현
-impl ToStr for i8 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for i16 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for i32 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for i64 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for u8 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for u16 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for u32 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for u64 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for f32 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for f64 {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl ToStr for String {
-    fn to_str(&self) -> String {
-        self.clone()
-    }
-}
-
-impl ToStr for &str {
-    fn to_str(&self) -> String {
-        self.to_string()
-    }
-}
-
 impl ToStr for bool {
     fn to_str(&self) -> String {
         self.to_string()
     }
 }
 
-impl<T> ToStr for Vec<T>
-where
-    T: AutoCast,
-{
-    fn to_str(&self) -> String {
-        let mut result = String::from("[");
-
-        for (i, item) in self.iter().enumerate() {
-            if i > 0 {
-                result.push_str(", ");
-            }
-
-            result.push_str(&item.to_str());
+impl ToFloat for bool {
+    fn to_float(&self) -> f64 {
+        if *self {
+            1.0
+        } else {
+            0.0
         }
+    }
+}
 
-        result.push_str("]");
+impl ToArray for bool {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
 
-        result
+impl ToMap for bool {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for bool {
+    fn to_boolean(&self) -> bool {
+        *self
+    }
+}
+// ---------------
+
+// Map 트레잇 구현
+impl ToInteger for Map {
+    fn to_integer(&self) -> i64 {
+        0 as i64
     }
 }
 
@@ -368,187 +673,9 @@ impl ToStr for Map {
     }
 }
 
-impl ToStr for Null {
-    fn to_str(&self) -> String {
-        String::from("null")
-    }
-}
-
-// ToFloat 트레잇 구현
-impl ToFloat for i8 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for i16 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for i32 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for i64 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for u8 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for u16 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for u32 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for u64 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for f32 {
-    fn to_float(&self) -> f64 {
-        *self as f64
-    }
-}
-
-impl ToFloat for f64 {
-    fn to_float(&self) -> f64 {
-        *self
-    }
-}
-
-impl ToFloat for String {
-    fn to_float(&self) -> f64 {
-        self.parse().unwrap()
-    }
-}
-
-impl ToFloat for &str {
-    fn to_float(&self) -> f64 {
-        self.parse().unwrap()
-    }
-}
-
-impl ToFloat for bool {
-    fn to_float(&self) -> f64 {
-        if *self {
-            1.0
-        } else {
-            0.0
-        }
-    }
-}
-
-impl<T> ToFloat for Vec<T>
-where
-    T: AutoCast,
-{
-    fn to_float(&self) -> f64 {
-        0 as f64
-    }
-}
-
 impl ToFloat for Map {
     fn to_float(&self) -> f64 {
         0 as f64
-    }
-}
-
-// ToArray 트레잇 구현
-
-impl ToArray for i8 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for i16 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for i32 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for i64 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for u8 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for u16 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for u32 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for u64 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for f32 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for f64 {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
-    }
-}
-
-impl ToArray for String {
-    fn to_array(&self) -> Array {
-        vec![Any::new(self.clone())].into()
-    }
-}
-
-impl ToArray for &str {
-    fn to_array(&self) -> Array {
-        vec![Any::new(self.to_string())].into()
-    }
-}
-
-impl ToArray for bool {
-    fn to_array(&self) -> Array {
-        vec![Any::new(*self)].into()
     }
 }
 
@@ -558,169 +685,9 @@ impl ToArray for Map {
     }
 }
 
-// ToMap 트레잇 구현
-
-impl ToMap for i8 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for i16 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for i32 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for i64 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for u8 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for u16 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for u32 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for u64 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for f32 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for f64 {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for String {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for &str {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
-impl ToMap for bool {
-    fn to_map(&self) -> Map {
-        Map(HashMap::new())
-    }
-}
-
 impl ToMap for Map {
     fn to_map(&self) -> Map {
         self.clone()
-    }
-}
-
-// ToBoolean 트레잇 구현
-
-impl ToBoolean for i8 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for i16 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for i32 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for i64 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for u8 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for u16 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for u32 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for u64 {
-    fn to_boolean(&self) -> bool {
-        *self != 0
-    }
-}
-
-impl ToBoolean for f32 {
-    fn to_boolean(&self) -> bool {
-        *self != 0.0
-    }
-}
-
-impl ToBoolean for f64 {
-    fn to_boolean(&self) -> bool {
-        *self != 0.0
-    }
-}
-
-impl ToBoolean for String {
-    fn to_boolean(&self) -> bool {
-        self.parse().unwrap_or(false)
-    }
-}
-
-impl ToBoolean for &str {
-    fn to_boolean(&self) -> bool {
-        self.parse().unwrap_or(false)
-    }
-}
-
-impl ToBoolean for bool {
-    fn to_boolean(&self) -> bool {
-        *self
     }
 }
 
@@ -729,6 +696,20 @@ impl ToBoolean for Map {
         true
     }
 }
+
+// Null 트레잇 구현
+impl ToInteger for Null {
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+impl ToStr for Null {
+    fn to_str(&self) -> String {
+        String::from("null")
+    }
+}
+// ---------------
 
 #[derive(Debug)]
 pub struct Any {
