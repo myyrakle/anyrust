@@ -672,6 +672,12 @@ impl ToBoolean for &str {
 // ---------------
 
 // 불리언 트레잇 구현
+impl From<bool> for Any {
+    fn from(value: bool) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for bool {
     fn to_integer(&self) -> i64 {
         if *self {
