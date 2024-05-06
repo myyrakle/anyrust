@@ -144,6 +144,12 @@ impl ToStr for Array {
 }
 
 // i8 트레잇 구현
+impl From<i8> for Any {
+    fn from(value: i8) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i8 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -182,6 +188,12 @@ impl ToBoolean for i8 {
 // ---------------
 
 // i16 트레잇 구현
+impl From<i16> for Any {
+    fn from(value: i16) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i16 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -220,6 +232,12 @@ impl ToBoolean for i16 {
 // ---------------
 
 // i32 트레잇 구현
+impl From<i32> for Any {
+    fn from(value: i32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -258,6 +276,12 @@ impl ToBoolean for i32 {
 // ---------------
 
 // i64 트레잇 구현
+impl From<i64> for Any {
+    fn from(value: i64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i64 {
     fn to_integer(&self) -> i64 {
         *self
