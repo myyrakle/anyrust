@@ -799,6 +799,12 @@ impl ToBoolean for Map {
 }
 
 // Null 트레잇 구현
+impl From<Null> for Any {
+    fn from(value: Null) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for Null {
     fn to_integer(&self) -> i64 {
         0 as i64
