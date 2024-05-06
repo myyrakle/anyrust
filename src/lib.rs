@@ -724,6 +724,24 @@ impl ToBoolean for bool {
 // ---------------
 
 // Map 트레잇 구현
+impl From<HashMap<Any, Any>> for Any {
+    fn from(value: HashMap<Any, Any>) -> Self {
+        Any::new(Map(value))
+    }
+}
+
+impl From<HashMap<Any, Any>> for Map {
+    fn from(value: HashMap<Any, Any>) -> Self {
+        Map(value)
+    }
+}
+
+impl From<Map> for Any {
+    fn from(value: Map) -> Self {
+        Any::new(value)
+    }
+}
+
 impl Display for Map {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.0)
