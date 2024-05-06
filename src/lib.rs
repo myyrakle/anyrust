@@ -584,6 +584,12 @@ impl ToBoolean for f64 {
 // ---------------
 
 // 문자열 트레잇 구현
+impl From<String> for Any {
+    fn from(value: String) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for String {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
@@ -622,6 +628,12 @@ impl ToBoolean for String {
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
+impl From<&str> for Any {
+    fn from(value: &str) -> Self {
+        Any::new(value.to_string())
+    }
+}
+
 impl ToInteger for &str {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
