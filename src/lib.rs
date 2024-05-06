@@ -6,7 +6,8 @@ use std::{
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
-// 기본 트레잇
+
+// any trait
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone
 {
@@ -20,64 +21,55 @@ impl<
 {
 }
 
+// null type
 #[derive(Debug, Clone)]
 pub struct Null;
+
+// null value
 #[allow(non_upper_case_globals)]
 pub const null: Null = Null {};
 
-// 배열 타입
+// array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
-impl From<Vec<Any>> for Array {
-    fn from(vec: Vec<Any>) -> Self {
-        Self(vec)
-    }
-}
-
-// 맵 타입
+// key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
 
-// 캐스팅용 트레잇: 특정 타입이 모든 타입으로 캐스팅할 수 있도록 정의합니다.
+// castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
 impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr> AutoCast for T {}
 
-// 캐스팅용 트레잇: 정수로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
     fn to_integer(&self) -> i64;
 }
 
-// 캐스팅용 트레잇: 실수로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a float.
 pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
 
-// 캐스팅용 트레잇: 문자열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a string.
 pub trait ToStr {
     fn to_str(&self) -> String;
 }
 
-// 캐스팅용 트레잇: 배열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to an array.
 pub trait ToArray {
     fn to_array(&self) -> Array;
 }
 
-// 캐스팅용 트레잇: 맵으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
 }
 
-// 캐스팅용 트레잇: 불리언으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a boolean.
 pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
-}
-
-impl Display for Map {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.0)
-    }
 }
 
 impl Display for Any {
@@ -87,6 +79,27 @@ impl Display for Any {
 }
 
 // array 트레잇 구현
+impl<T> From<Vec<T>> for Any
+where
+    T: Anyable,
+{
+    fn from(value: Vec<T>) -> Self {
+        Any::new(Array(value.into_iter().map(|v| Any::new(v)).collect()))
+    }
+}
+
+impl From<Array> for Any {
+    fn from(array: Array) -> Self {
+        Any::new(array)
+    }
+}
+
+impl From<Vec<Any>> for Array {
+    fn from(vec: Vec<Any>) -> Self {
+        Self(vec)
+    }
+}
+
 impl Display for Array {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut result = String::from("[");
@@ -146,6 +159,12 @@ impl ToStr for Array {
 }
 
 // i8 트레잇 구현
+impl From<i8> for Any {
+    fn from(value: i8) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i8 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -184,6 +203,12 @@ impl ToBoolean for i8 {
 // ---------------
 
 // i16 트레잇 구현
+impl From<i16> for Any {
+    fn from(value: i16) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i16 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -222,6 +247,12 @@ impl ToBoolean for i16 {
 // ---------------
 
 // i32 트레잇 구현
+impl From<i32> for Any {
+    fn from(value: i32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -260,6 +291,12 @@ impl ToBoolean for i32 {
 // ---------------
 
 // i64 트레잇 구현
+impl From<i64> for Any {
+    fn from(value: i64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for i64 {
     fn to_integer(&self) -> i64 {
         *self
@@ -298,6 +335,12 @@ impl ToBoolean for i64 {
 // ---------------
 
 // u8 트레잇 구현
+impl From<u8> for Any {
+    fn from(value: u8) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u8 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -336,6 +379,12 @@ impl ToBoolean for u8 {
 // ---------------
 
 // u16 트레잇 구현
+impl From<u16> for Any {
+    fn from(value: u16) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u16 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -374,6 +423,12 @@ impl ToBoolean for u16 {
 // ---------------
 
 // u32 트레잇 구현
+impl From<u32> for Any {
+    fn from(value: u32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -412,6 +467,12 @@ impl ToBoolean for u32 {
 // ---------------
 
 // u64 트레잇 구현
+impl From<u64> for Any {
+    fn from(value: u64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u64 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -450,6 +511,12 @@ impl ToBoolean for u64 {
 // ---------------
 
 // f32 트레잇 구현
+impl From<f32> for Any {
+    fn from(value: f32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for f32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -488,6 +555,12 @@ impl ToBoolean for f32 {
 // ---------------
 
 // f64 트레잇 구현
+impl From<f64> for Any {
+    fn from(value: f64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for f64 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -526,6 +599,12 @@ impl ToBoolean for f64 {
 // ---------------
 
 // 문자열 트레잇 구현
+impl From<String> for Any {
+    fn from(value: String) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for String {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
@@ -564,6 +643,12 @@ impl ToBoolean for String {
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
+impl From<&str> for Any {
+    fn from(value: &str) -> Self {
+        Any::new(value.to_string())
+    }
+}
+
 impl ToInteger for &str {
     fn to_integer(&self) -> i64 {
         self.parse().unwrap()
@@ -602,6 +687,12 @@ impl ToBoolean for &str {
 // ---------------
 
 // 불리언 트레잇 구현
+impl From<bool> for Any {
+    fn from(value: bool) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for bool {
     fn to_integer(&self) -> i64 {
         if *self {
@@ -648,6 +739,30 @@ impl ToBoolean for bool {
 // ---------------
 
 // Map 트레잇 구현
+impl From<HashMap<Any, Any>> for Any {
+    fn from(value: HashMap<Any, Any>) -> Self {
+        Any::new(Map(value))
+    }
+}
+
+impl From<HashMap<Any, Any>> for Map {
+    fn from(value: HashMap<Any, Any>) -> Self {
+        Map(value)
+    }
+}
+
+impl From<Map> for Any {
+    fn from(value: Map) -> Self {
+        Any::new(value)
+    }
+}
+
+impl Display for Map {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
 impl ToInteger for Map {
     fn to_integer(&self) -> i64 {
         0 as i64
@@ -699,6 +814,12 @@ impl ToBoolean for Map {
 }
 
 // Null 트레잇 구현
+impl From<Null> for Any {
+    fn from(value: Null) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for Null {
     fn to_integer(&self) -> i64 {
         0 as i64
