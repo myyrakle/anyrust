@@ -496,6 +496,12 @@ impl ToBoolean for u64 {
 // ---------------
 
 // f32 트레잇 구현
+impl From<f32> for Any {
+    fn from(value: f32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for f32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -534,6 +540,12 @@ impl ToBoolean for f32 {
 // ---------------
 
 // f64 트레잇 구현
+impl From<f64> for Any {
+    fn from(value: f64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for f64 {
     fn to_integer(&self) -> i64 {
         *self as i64
