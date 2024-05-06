@@ -6,7 +6,8 @@ use std::{
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
-// 기본 트레잇
+
+// any trait
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone
 {
@@ -20,12 +21,15 @@ impl<
 {
 }
 
+// null type
 #[derive(Debug, Clone)]
 pub struct Null;
+
+// null value
 #[allow(non_upper_case_globals)]
 pub const null: Null = Null {};
 
-// 배열 타입
+// array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
@@ -35,49 +39,43 @@ impl From<Vec<Any>> for Array {
     }
 }
 
-// 맵 타입
+// key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
 
-// 캐스팅용 트레잇: 특정 타입이 모든 타입으로 캐스팅할 수 있도록 정의합니다.
+// castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
 impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr> AutoCast for T {}
 
-// 캐스팅용 트레잇: 정수로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
     fn to_integer(&self) -> i64;
 }
 
-// 캐스팅용 트레잇: 실수로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a float.
 pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
 
-// 캐스팅용 트레잇: 문자열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a string.
 pub trait ToStr {
     fn to_str(&self) -> String;
 }
 
-// 캐스팅용 트레잇: 배열로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to an array.
 pub trait ToArray {
     fn to_array(&self) -> Array;
 }
 
-// 캐스팅용 트레잇: 맵으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
 }
 
-// 캐스팅용 트레잇: 불리언으로 캐스팅될때 어떻게 변환될지를 정의합니다.
+// Trait for casting: Defines how to convert when cast to a boolean.
 pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
-}
-
-impl Display for Map {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.0)
-    }
 }
 
 impl Display for Any {
@@ -648,6 +646,12 @@ impl ToBoolean for bool {
 // ---------------
 
 // Map 트레잇 구현
+impl Display for Map {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
 impl ToInteger for Map {
     fn to_integer(&self) -> i64 {
         0 as i64
