@@ -320,6 +320,12 @@ impl ToBoolean for i64 {
 // ---------------
 
 // u8 트레잇 구현
+impl From<u8> for Any {
+    fn from(value: u8) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u8 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -358,6 +364,12 @@ impl ToBoolean for u8 {
 // ---------------
 
 // u16 트레잇 구현
+impl From<u16> for Any {
+    fn from(value: u16) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u16 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -396,6 +408,12 @@ impl ToBoolean for u16 {
 // ---------------
 
 // u32 트레잇 구현
+impl From<u32> for Any {
+    fn from(value: u32) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u32 {
     fn to_integer(&self) -> i64 {
         *self as i64
@@ -434,6 +452,12 @@ impl ToBoolean for u32 {
 // ---------------
 
 // u64 트레잇 구현
+impl From<u64> for Any {
+    fn from(value: u64) -> Self {
+        Any::new(value)
+    }
+}
+
 impl ToInteger for u64 {
     fn to_integer(&self) -> i64 {
         *self as i64
