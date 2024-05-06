@@ -33,12 +33,6 @@ pub const null: Null = Null {};
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
-impl From<Vec<Any>> for Array {
-    fn from(vec: Vec<Any>) -> Self {
-        Self(vec)
-    }
-}
-
 // key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
@@ -85,6 +79,27 @@ impl Display for Any {
 }
 
 // array 트레잇 구현
+impl<T> From<Vec<T>> for Any
+where
+    T: Anyable,
+{
+    fn from(value: Vec<T>) -> Self {
+        Any::new(Array(value.into_iter().map(|v| Any::new(v)).collect()))
+    }
+}
+
+impl From<Array> for Any {
+    fn from(array: Array) -> Self {
+        Any::new(array)
+    }
+}
+
+impl From<Vec<Any>> for Array {
+    fn from(vec: Vec<Any>) -> Self {
+        Self(vec)
+    }
+}
+
 impl Display for Array {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut result = String::from("[");
