@@ -79,6 +79,14 @@ impl Display for Any {
 }
 
 // array 트레잇 구현
+impl PartialEq for Array {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl Eq for Array {}
+
 impl<T> From<Vec<T>> for Any
 where
     T: Anyable,
