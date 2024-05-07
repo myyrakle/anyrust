@@ -1069,3 +1069,32 @@ impl Add for Any {
         }
     }
 }
+
+impl PartialEq for Any {
+    fn eq(&self, other: &Self) -> bool {
+        if self.type_id != other.type_id {
+            false
+        } else {
+            match self.type_id {
+                type_id if type_id == *I8 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I16 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I32 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U8 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U16 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U32 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *F32 => self.data.to_float() == other.data.to_float(),
+                type_id if type_id == *F64 => self.data.to_float() == other.data.to_float(),
+                type_id if type_id == *STRING => self.data.to_string() == other.data.to_string(),
+                type_id if type_id == *STR => self.data.to_string() == other.data.to_string(),
+                type_id if type_id == *BOOL => self.data.to_boolean() == other.data.to_boolean(),
+                //type_id if type_id == *ARRAY => self.data.to_array() == other.data.to_array(),
+                //type_id if type_id == *MAP => self.data.to_map() == other.data.to_map(),
+                _ => self.data.to_string() == other.data.to_string(),
+            }
+        }
+    }
+}
+
+impl Eq for Any {}
