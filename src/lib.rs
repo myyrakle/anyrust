@@ -1115,3 +1115,27 @@ impl PartialEq for Any {
 }
 
 impl Eq for Any {}
+
+impl Hash for Any {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.type_id.hash(state);
+        match self.type_id {
+            type_id if type_id == *I8 => self.data.to_integer().hash(state),
+            type_id if type_id == *I16 => self.data.to_integer().hash(state),
+            type_id if type_id == *I32 => self.data.to_integer().hash(state),
+            type_id if type_id == *I64 => self.data.to_integer().hash(state),
+            type_id if type_id == *U8 => self.data.to_integer().hash(state),
+            type_id if type_id == *U16 => self.data.to_integer().hash(state),
+            type_id if type_id == *U32 => self.data.to_integer().hash(state),
+            type_id if type_id == *U64 => self.data.to_integer().hash(state),
+            type_id if type_id == *F32 => self.data.to_float().to_bits().hash(state),
+            type_id if type_id == *F64 => self.data.to_float().to_bits().hash(state),
+            type_id if type_id == *STRING => self.data.to_string().hash(state),
+            type_id if type_id == *STR => self.data.to_string().hash(state),
+            type_id if type_id == *BOOL => self.data.to_boolean().hash(state),
+            type_id if type_id == *ARRAY => self.data.to_array().0.hash(state),
+            type_id if type_id == *MAP => self.data.to_string().hash(state),
+            _ => self.data.to_string().hash(state),
+        }
+    }
+}
