@@ -2,6 +2,7 @@ use std::{
     any::TypeId,
     collections::HashMap,
     fmt::{Debug, Display},
+    hash::Hash,
     ops::Add,
 };
 
@@ -79,6 +80,14 @@ impl Display for Any {
 }
 
 // array 트레잇 구현
+impl PartialEq for Array {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl Eq for Array {}
+
 impl<T> From<Vec<T>> for Any
 where
     T: Anyable,
@@ -739,6 +748,14 @@ impl ToBoolean for bool {
 // ---------------
 
 // Map 트레잇 구현
+impl PartialEq for Map {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl Eq for Map {}
+
 impl From<HashMap<Any, Any>> for Any {
     fn from(value: HashMap<Any, Any>) -> Self {
         Any::new(Map(value))
@@ -1066,6 +1083,111 @@ impl Add for Any {
             let a = self.data.to_string();
             let b = other.data.to_string();
             Any::new(a + &b)
+        }
+    }
+}
+
+impl PartialEq for Any {
+    fn eq(&self, other: &Self) -> bool {
+        if self.type_id != other.type_id {
+            false
+        } else {
+            match self.type_id {
+                type_id if type_id == *I8 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I16 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I32 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *I64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U8 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U16 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U32 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *U64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *F32 => self.data.to_float() == other.data.to_float(),
+                type_id if type_id == *F64 => self.data.to_float() == other.data.to_float(),
+                type_id if type_id == *STRING => self.data.to_string() == other.data.to_string(),
+                type_id if type_id == *STR => self.data.to_string() == other.data.to_string(),
+                type_id if type_id == *BOOL => self.data.to_boolean() == other.data.to_boolean(),
+                type_id if type_id == *ARRAY => self.data.to_array() == other.data.to_array(),
+                type_id if type_id == *MAP => self.data.to_map() == other.data.to_map(),
+                _ => self.data.to_string() == other.data.to_string(),
+            }
+        }
+    }
+}
+
+impl Eq for Any {}
+
+#[cfg(test)]
+mod test_eq_for_any {
+    use super::*;
+
+    #[test]
+    fn test_eq() {
+        let a = Any::new(5);
+        let b = Any::new(5);
+        assert_eq!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(10);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(5.0);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(5.0);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new("5");
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new("5");
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(true);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(false);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::from(vec![1, 2, 3]);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::from(HashMap::new());
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(null);
+        assert_ne!(a, b);
+    }
+}
+
+impl Hash for Any {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.type_id.hash(state);
+        match self.type_id {
+            type_id if type_id == *I8 => self.data.to_integer().hash(state),
+            type_id if type_id == *I16 => self.data.to_integer().hash(state),
+            type_id if type_id == *I32 => self.data.to_integer().hash(state),
+            type_id if type_id == *I64 => self.data.to_integer().hash(state),
+            type_id if type_id == *U8 => self.data.to_integer().hash(state),
+            type_id if type_id == *U16 => self.data.to_integer().hash(state),
+            type_id if type_id == *U32 => self.data.to_integer().hash(state),
+            type_id if type_id == *U64 => self.data.to_integer().hash(state),
+            type_id if type_id == *F32 => self.data.to_float().to_bits().hash(state),
+            type_id if type_id == *F64 => self.data.to_float().to_bits().hash(state),
+            type_id if type_id == *STRING => self.data.to_string().hash(state),
+            type_id if type_id == *STR => self.data.to_string().hash(state),
+            type_id if type_id == *BOOL => self.data.to_boolean().hash(state),
+            type_id if type_id == *ARRAY => self.data.to_array().0.hash(state),
+            type_id if type_id == *MAP => self.data.to_string().hash(state),
+            _ => self.data.to_string().hash(state),
         }
     }
 }
