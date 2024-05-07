@@ -1116,6 +1116,58 @@ impl PartialEq for Any {
 
 impl Eq for Any {}
 
+#[cfg(test)]
+mod test_eq_for_any {
+    use super::*;
+
+    #[test]
+    fn test_eq() {
+        let a = Any::new(5);
+        let b = Any::new(5);
+        assert_eq!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(10);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(5.0);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(5.0);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new("5");
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new("5");
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(true);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(false);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::from(vec![1, 2, 3]);
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::from(HashMap::new());
+        assert_ne!(a, b);
+
+        let a = Any::new(5);
+        let b = Any::new(null);
+        assert_ne!(a, b);
+    }
+}
+
 impl Hash for Any {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.type_id.hash(state);
