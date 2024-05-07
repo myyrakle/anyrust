@@ -2,6 +2,7 @@ use std::{
     any::TypeId,
     collections::HashMap,
     fmt::{Debug, Display},
+    hash::Hash,
     ops::Add,
 };
 
@@ -747,6 +748,14 @@ impl ToBoolean for bool {
 // ---------------
 
 // Map 트레잇 구현
+impl PartialEq for Map {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl Eq for Map {}
+
 impl From<HashMap<Any, Any>> for Any {
     fn from(value: HashMap<Any, Any>) -> Self {
         Any::new(Map(value))
@@ -1097,8 +1106,8 @@ impl PartialEq for Any {
                 type_id if type_id == *STRING => self.data.to_string() == other.data.to_string(),
                 type_id if type_id == *STR => self.data.to_string() == other.data.to_string(),
                 type_id if type_id == *BOOL => self.data.to_boolean() == other.data.to_boolean(),
-                //type_id if type_id == *ARRAY => self.data.to_array() == other.data.to_array(),
-                //type_id if type_id == *MAP => self.data.to_map() == other.data.to_map(),
+                type_id if type_id == *ARRAY => self.data.to_array() == other.data.to_array(),
+                type_id if type_id == *MAP => self.data.to_map() == other.data.to_map(),
                 _ => self.data.to_string() == other.data.to_string(),
             }
         }
