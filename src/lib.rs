@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Mul, Sub},
+    ops::{Add, Div, Mul, Not, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1621,6 +1621,19 @@ mod test_div_for_any {
         for test_case in test_cases {
             let result = test_case.a / test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
+impl Not for Any {
+    type Output = Self;
+
+    fn not(self) -> Self {
+        if self.type_id == *NULL {
+            Any::new(null)
+        } else {
+            let a = self.data.to_boolean();
+            Any::new(!a)
         }
     }
 }
