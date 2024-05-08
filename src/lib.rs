@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Sub},
+    ops::{Add, Mul, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1304,6 +1304,164 @@ mod test_sub_for_any {
 
         for test_case in test_cases {
             let result = test_case.a - test_case.b;
+            assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
+impl Mul for Any {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(null)
+        } else if self.type_id == other.type_id {
+            match self.type_id {
+                type_id if type_id == *I8 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *I16 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *I32 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *I64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *U8 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *U16 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *U32 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *F32 => {
+                    let a = self.data.to_float();
+                    let b = other.data.to_float();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *F64 => {
+                    let a = self.data.to_float();
+                    let b = other.data.to_float();
+                    Any::new(a * b)
+                }
+                _ => Any::new(f64::NAN),
+            }
+        } else if self.type_id == *STRING || other.type_id == *STRING {
+            Any::new(f64::NAN)
+        } else if self.type_id == *STR || other.type_id == *STR {
+            Any::new(f64::NAN)
+        } else if self.type_id == *F64 || other.type_id == *F64 {
+            let a: f64 = self.data.to_float();
+            let b = other.data.to_float();
+            Any::new(a * b)
+        } else if self.type_id == *F32 || other.type_id == *F32 {
+            let a: f64 = self.data.to_float();
+            let b = other.data.to_float();
+            Any::new(a * b)
+        } else if self.type_id == *I64 || other.type_id == *I64 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *I32 || other.type_id == *I32 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *I16 || other.type_id == *I16 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *I8 || other.type_id == *I8 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            let result = a + b;
+            Any::new(result)
+        } else if self.type_id == *U64 || other.type_id == *U64 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *U32 || other.type_id == *U32 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *U16 || other.type_id == *U16 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else if self.type_id == *U8 || other.type_id == *U8 {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a * b)
+        } else {
+            Any::new(f64::NAN)
+        }
+    }
+}
+
+#[cfg(test)]
+mod test_mul_for_any {
+    use super::*;
+
+    #[test]
+    fn test_mul() {
+        struct TestCase {
+            name: String,
+            a: Any,
+            b: Any,
+            result: Any,
+        }
+
+        let test_cases = vec![
+            TestCase {
+                name: "i64".to_string(),
+                a: Any::new(5_i64),
+                b: Any::new(10_i64),
+                result: Any::new(50_i64),
+            },
+            TestCase {
+                name: "u64".to_string(),
+                a: Any::new(5_u64),
+                b: Any::new(10_u64),
+                result: Any::new(50_i64),
+            },
+            TestCase {
+                name: "f32".to_string(),
+                a: Any::new(5.0_f32),
+                b: Any::new(10.0_f32),
+                result: Any::new(50.0_f64),
+            },
+            TestCase {
+                name: "f64".to_string(),
+                a: Any::new(5.0),
+                b: Any::new(10.0),
+                result: Any::new(50.0),
+            },
+        ];
+
+        for test_case in test_cases {
+            let result = test_case.a * test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
     }
