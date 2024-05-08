@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Mul, Not, Sub},
+    ops::{Add, Div, Index, Mul, Not, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -61,6 +61,10 @@ pub trait ToStr {
 // Trait for casting: Defines how to convert when cast to an array.
 pub trait ToArray {
     fn to_array(&self) -> Array;
+
+    fn to_array_ref(&self) -> &Array {
+        &EMPTY_ARRAY
+    }
 }
 
 // Trait for casting: Defines how to convert when cast to a map.
@@ -126,6 +130,10 @@ impl Display for Array {
 impl ToArray for Array {
     fn to_array(&self) -> Array {
         self.clone()
+    }
+
+    fn to_array_ref(&self) -> &Array {
+        self
     }
 }
 
@@ -944,6 +952,9 @@ lazy_static::lazy_static! {
     pub static ref ARRAY: TypeId = TypeId::of::<Array>();
     pub static ref MAP: TypeId = TypeId::of::<Map>();
     pub static ref NULL: TypeId = TypeId::of::<Null>();
+
+    static ref NULL_ANY: Any = Any::new(null);
+    static ref EMPTY_ARRAY: Array = Array(vec![]);
 }
 
 impl Add for Any {
@@ -1781,6 +1792,19 @@ impl Hash for Any {
             type_id if type_id == *ARRAY => self.data.to_array().0.hash(state),
             type_id if type_id == *MAP => self.data.to_string().hash(state),
             _ => self.data.to_string().hash(state),
+        }
+    }
+}
+
+impl Index<usize> for Any {
+    type Output = Any;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_ref();
+            &array.0[index]
+        } else {
+            &NULL_ANY
         }
     }
 }
