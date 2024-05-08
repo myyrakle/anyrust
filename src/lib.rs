@@ -1810,6 +1810,10 @@ impl Index<usize> for Any {
     fn index(&self, index: usize) -> &Self::Output {
         if self.type_id == *ARRAY {
             let array = self.data.to_array_ref();
+            if index >= array.0.len() {
+                return &NULL_ANY;
+            }
+
             &array.0[index]
         } else {
             &NULL_ANY
@@ -1821,6 +1825,16 @@ impl IndexMut<usize> for Any {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         if self.type_id == *ARRAY {
             let array = self.data.to_array_mut();
+            if index >= array.0.len() {
+                unsafe {
+                    let uninit: std::mem::MaybeUninit<Self::Output> =
+                        std::mem::MaybeUninit::uninit();
+                    let ptr = uninit.as_ptr() as *mut Self::Output;
+                    *ptr = NULL_ANY.clone();
+                    return &mut *ptr;
+                }
+            }
+
             &mut array.0[index]
         } else {
             unsafe {
@@ -1830,5 +1844,19 @@ impl IndexMut<usize> for Any {
                 &mut *ptr
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod test_indexer_for_any {
+    use super::*;
+
+    #[test]
+    fn test_array_indexer() {
+        let a = Any::from(vec![1, 2, 3]);
+        assert_eq!(a[0], Any::new(1));
+        assert_eq!(a[1], Any::new(2));
+        assert_eq!(a[2], Any::new(3));
+        assert_eq!(a[3], Any::new(null));
     }
 }
