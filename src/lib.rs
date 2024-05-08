@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Mul, Not, Sub},
+    ops::{Add, Div, Index, IndexMut, Mul, Not, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -61,6 +61,14 @@ pub trait ToStr {
 // Trait for casting: Defines how to convert when cast to an array.
 pub trait ToArray {
     fn to_array(&self) -> Array;
+
+    fn to_array_ref(&self) -> &Array {
+        &EMPTY_ARRAY
+    }
+
+    fn to_array_mut(&mut self) -> &mut Array {
+        unreachable!()
+    }
 }
 
 // Trait for casting: Defines how to convert when cast to a map.
@@ -126,6 +134,14 @@ impl Display for Array {
 impl ToArray for Array {
     fn to_array(&self) -> Array {
         self.clone()
+    }
+
+    fn to_array_ref(&self) -> &Array {
+        self
+    }
+
+    fn to_array_mut(&mut self) -> &mut Array {
+        self
     }
 }
 
@@ -944,6 +960,9 @@ lazy_static::lazy_static! {
     pub static ref ARRAY: TypeId = TypeId::of::<Array>();
     pub static ref MAP: TypeId = TypeId::of::<Map>();
     pub static ref NULL: TypeId = TypeId::of::<Null>();
+
+    static ref NULL_ANY: Any = Any::new(null);
+    static ref EMPTY_ARRAY: Array = Array(vec![]);
 }
 
 impl Add for Any {
@@ -1782,5 +1801,62 @@ impl Hash for Any {
             type_id if type_id == *MAP => self.data.to_string().hash(state),
             _ => self.data.to_string().hash(state),
         }
+    }
+}
+
+impl Index<usize> for Any {
+    type Output = Any;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_ref();
+            if index >= array.0.len() {
+                return &NULL_ANY;
+            }
+
+            &array.0[index]
+        } else {
+            &NULL_ANY
+        }
+    }
+}
+
+impl IndexMut<usize> for Any {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_mut();
+            if index >= array.0.len() {
+                unsafe {
+                    let uninit: std::mem::MaybeUninit<Self::Output> =
+                        std::mem::MaybeUninit::uninit();
+                    let ptr = uninit.as_ptr() as *mut Self::Output;
+                    *ptr = NULL_ANY.clone();
+                    return &mut *ptr;
+                }
+            }
+
+            &mut array.0[index]
+        } else {
+            unsafe {
+                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
+                let ptr = uninit.as_ptr() as *mut Self::Output;
+                *ptr = NULL_ANY.clone();
+                &mut *ptr
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod test_indexer_for_any {
+    use super::*;
+
+    #[test]
+    fn test_array_indexer() {
+        let a = Any::from(vec![1, 2, 3]);
+        assert_eq!(a[0], Any::new(1));
+        assert_eq!(a[1], Any::new(2));
+        assert_eq!(a[2], Any::new(3));
+        assert_eq!(a[3], Any::new(null));
     }
 }
