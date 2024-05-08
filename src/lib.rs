@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Index, Mul, Not, Sub},
+    ops::{Add, Div, Index, IndexMut, Mul, Not, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -64,6 +64,10 @@ pub trait ToArray {
 
     fn to_array_ref(&self) -> &Array {
         &EMPTY_ARRAY
+    }
+
+    fn to_array_mut(&mut self) -> &mut Array {
+        unreachable!()
     }
 }
 
@@ -133,6 +137,10 @@ impl ToArray for Array {
     }
 
     fn to_array_ref(&self) -> &Array {
+        self
+    }
+
+    fn to_array_mut(&mut self) -> &mut Array {
         self
     }
 }
@@ -1805,6 +1813,22 @@ impl Index<usize> for Any {
             &array.0[index]
         } else {
             &NULL_ANY
+        }
+    }
+}
+
+impl IndexMut<usize> for Any {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_mut();
+            &mut array.0[index]
+        } else {
+            unsafe {
+                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
+                let ptr = uninit.as_ptr() as *mut Self::Output;
+                *ptr = NULL_ANY.clone();
+                &mut *ptr
+            }
         }
     }
 }
