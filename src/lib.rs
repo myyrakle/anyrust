@@ -1578,6 +1578,53 @@ impl Div for Any {
     }
 }
 
+#[cfg(test)]
+mod test_div_for_any {
+    use super::*;
+
+    #[test]
+    fn test_div() {
+        struct TestCase {
+            name: String,
+            a: Any,
+            b: Any,
+            result: Any,
+        }
+
+        let test_cases = vec![
+            TestCase {
+                name: "i64".to_string(),
+                a: Any::new(5_i64),
+                b: Any::new(10_i64),
+                result: Any::new(0_i64),
+            },
+            TestCase {
+                name: "u64".to_string(),
+                a: Any::new(5_u64),
+                b: Any::new(10_u64),
+                result: Any::new(0_i64),
+            },
+            TestCase {
+                name: "f32".to_string(),
+                a: Any::new(5.0_f32),
+                b: Any::new(10.0_f32),
+                result: Any::new(0.5_f64),
+            },
+            TestCase {
+                name: "f64".to_string(),
+                a: Any::new(5.0),
+                b: Any::new(10.0),
+                result: Any::new(0.5),
+            },
+        ];
+
+        for test_case in test_cases {
+            let result = test_case.a / test_case.b;
+            assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
 impl PartialEq for Any {
     fn eq(&self, other: &Self) -> bool {
         if self.type_id != other.type_id {
