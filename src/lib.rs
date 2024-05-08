@@ -1638,6 +1638,48 @@ impl Not for Any {
     }
 }
 
+#[cfg(test)]
+mod test_not_for_any {
+    use super::*;
+
+    #[test]
+    fn test_not() {
+        struct TestCase {
+            name: String,
+            a: Any,
+            result: Any,
+        }
+
+        let test_cases = vec![
+            TestCase {
+                name: "true".to_string(),
+                a: Any::new(true),
+                result: Any::new(false),
+            },
+            TestCase {
+                name: "false".to_string(),
+                a: Any::new(false),
+                result: Any::new(true),
+            },
+            TestCase {
+                name: "zero value".to_string(),
+                a: Any::new(0),
+                result: Any::new(true),
+            },
+            TestCase {
+                name: "non zero value".to_string(),
+                a: Any::new(4444),
+                result: Any::new(false),
+            },
+        ];
+
+        for test_case in test_cases {
+            let result = !test_case.a;
+            assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
 impl PartialEq for Any {
     fn eq(&self, other: &Self) -> bool {
         if self.type_id != other.type_id {
