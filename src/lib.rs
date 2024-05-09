@@ -1860,3 +1860,19 @@ mod test_indexer_for_any {
         assert_eq!(a[3], Any::new(null));
     }
 }
+
+// macro
+#[macro_export]
+
+macro_rules! array {
+    ($($x:expr),*) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push(Any::from($x));
+            )*
+
+            Any::from(anyrust::Array::from(temp_vec))
+        }
+    };
+}
