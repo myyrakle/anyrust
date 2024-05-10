@@ -74,6 +74,14 @@ pub trait ToArray {
 // Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
+
+    fn to_map_ref(&self) -> &Map {
+        &EMPTY_MAP
+    }
+
+    fn to_map_mut(&mut self) -> &mut Map {
+        unreachable!()
+    }
 }
 
 // Trait for casting: Defines how to convert when cast to a boolean.
@@ -359,6 +367,49 @@ impl ToBoolean for i64 {
 }
 // ---------------
 
+// isize 트레잇 구현
+impl From<isize> for Any {
+    fn from(value: isize) -> Self {
+        Any::new(value)
+    }
+}
+
+impl ToInteger for isize {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToStr for isize {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for isize {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for isize {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for isize {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for isize {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+
 // u8 트레잇 구현
 impl From<u8> for Any {
     fn from(value: u8) -> Self {
@@ -529,6 +580,50 @@ impl ToMap for u64 {
 }
 
 impl ToBoolean for u64 {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
+// usize 트레잇 구현
+impl From<usize> for Any {
+    fn from(value: usize) -> Self {
+        Any::new(value)
+    }
+}
+
+impl ToInteger for usize {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToStr for usize {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for usize {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for usize {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for usize {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for usize {
     fn to_boolean(&self) -> bool {
         *self != 0
     }
@@ -838,6 +933,14 @@ impl ToMap for Map {
     fn to_map(&self) -> Map {
         self.clone()
     }
+
+    fn to_map_ref(&self) -> &Map {
+        self
+    }
+
+    fn to_map_mut(&mut self) -> &mut Map {
+        self
+    }
 }
 
 impl ToBoolean for Map {
@@ -963,6 +1066,7 @@ lazy_static::lazy_static! {
 
     static ref NULL_ANY: Any = Any::new(null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
+    static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
 
 impl Add for Any {
@@ -1804,28 +1908,44 @@ impl Hash for Any {
     }
 }
 
-impl Index<usize> for Any {
+impl<T> Index<T> for Any
+where
+    T: Into<Any>,
+{
     type Output = Any;
 
-    fn index(&self, index: usize) -> &Self::Output {
+    fn index(&self, index: T) -> &Self::Output {
+        let key: Any = index.into();
+
         if self.type_id == *ARRAY {
             let array = self.data.to_array_ref();
-            if index >= array.0.len() {
+            let key = key.data.to_integer() as usize;
+            if key >= array.0.len() {
                 return &NULL_ANY;
             }
 
-            &array.0[index]
+            &array.0[key]
+        } else if self.type_id == *MAP {
+            let map = self.data.to_map_ref();
+
+            map.0.get(&key).unwrap_or(&NULL_ANY)
         } else {
             &NULL_ANY
         }
     }
 }
 
-impl IndexMut<usize> for Any {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+impl<T> IndexMut<T> for Any
+where
+    T: Into<Any>,
+{
+    fn index_mut(&mut self, index: T) -> &mut Self::Output {
+        let key: Any = index.into();
+
         if self.type_id == *ARRAY {
             let array = self.data.to_array_mut();
-            if index >= array.0.len() {
+            let key = key.data.to_integer() as usize;
+            if key >= array.0.len() {
                 unsafe {
                     let uninit: std::mem::MaybeUninit<Self::Output> =
                         std::mem::MaybeUninit::uninit();
@@ -1835,7 +1955,15 @@ impl IndexMut<usize> for Any {
                 }
             }
 
-            &mut array.0[index]
+            &mut array.0[key]
+        } else if self.type_id == *MAP {
+            let map = self.data.to_map_mut();
+
+            if let None = map.0.get(&key) {
+                map.0.insert(key.clone(), NULL_ANY.clone());
+            }
+
+            map.0.get_mut(&key).unwrap()
         } else {
             unsafe {
                 let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
@@ -1858,6 +1986,18 @@ mod test_indexer_for_any {
         assert_eq!(a[1], Any::new(2));
         assert_eq!(a[2], Any::new(3));
         assert_eq!(a[3], Any::new(null));
+    }
+
+    #[test]
+    fn test_map_indexer() {
+        let mut a = Any::from(HashMap::new());
+        a[Any::from(1)] = Any::new(1);
+        a[Any::from(2)] = Any::new(2);
+        a[3] = Any::new(3);
+        assert_eq!(a[Any::from(1)], Any::new(1));
+        assert_eq!(a[Any::from(2)], Any::new(2));
+        assert_eq!(a[Any::from(3)], Any::new(3));
+        assert_eq!(a[Any::from(4)], Any::new(null));
     }
 }
 
