@@ -1278,6 +1278,14 @@ mod test_add_for_any {
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
     }
+
+    #[test]
+    fn test_add_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a += b;
+        assert_eq!(a, Any::new(15_i64));
+    }
 }
 
 impl Sub for Any {
