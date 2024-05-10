@@ -1832,6 +1832,11 @@ impl Index<usize> for Any {
             }
 
             &array.0[index]
+        } else if self.type_id == *MAP {
+            let map = self.data.to_map_ref();
+
+            let key = Any::new(index);
+            map.0.get(&key).unwrap_or(&NULL_ANY)
         } else {
             &NULL_ANY
         }
