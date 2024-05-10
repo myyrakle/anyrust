@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Not, Sub, SubAssign},
+    ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1571,6 +1571,12 @@ impl Mul for Any {
     }
 }
 
+impl MulAssign for Any {
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.clone() * other;
+    }
+}
+
 #[cfg(test)]
 mod test_mul_for_any {
     use super::*;
@@ -1615,6 +1621,14 @@ mod test_mul_for_any {
             let result = test_case.a * test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
+    }
+
+    #[test]
+    fn test_mul_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a *= b;
+        assert_eq!(a, Any::new(50_i64));
     }
 }
 
