@@ -1864,6 +1864,51 @@ impl IndexMut<usize> for Any {
     }
 }
 
+impl<T> Index<T> for Any
+where
+    T: Into<Any>,
+{
+    type Output = Any;
+
+    fn index(&self, index: T) -> &Self::Output {
+        let key: Any = index.into();
+
+        if self.type_id == *MAP {
+            let map = self.data.to_map_ref();
+
+            map.0.get(&key).unwrap_or(&NULL_ANY)
+        } else {
+            &NULL_ANY
+        }
+    }
+}
+
+impl<T> IndexMut<T> for Any
+where
+    T: Into<Any>,
+{
+    fn index_mut(&mut self, index: T) -> &mut Self::Output {
+        let key: Any = index.into();
+
+        if self.type_id == *MAP {
+            let map = self.data.to_map_mut();
+
+            if let None = map.0.get(&key) {
+                map.0.insert(key.clone(), NULL_ANY.clone());
+            }
+
+            map.0.get_mut(&key).unwrap()
+        } else {
+            unsafe {
+                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
+                let ptr = uninit.as_ptr() as *mut Self::Output;
+                *ptr = NULL_ANY.clone();
+                &mut *ptr
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod test_indexer_for_any {
     use super::*;
@@ -1876,36 +1921,17 @@ mod test_indexer_for_any {
         assert_eq!(a[2], Any::new(3));
         assert_eq!(a[3], Any::new(null));
     }
-}
 
-impl Index<Any> for Any {
-    type Output = Any;
-
-    fn index(&self, index: Any) -> &Self::Output {
-        if self.type_id == *MAP {
-            let map = self.data.to_map_ref();
-
-            map.0.get(&index).unwrap_or(&NULL_ANY)
-        } else {
-            &NULL_ANY
-        }
-    }
-}
-
-impl IndexMut<Any> for Any {
-    fn index_mut(&mut self, index: Any) -> &mut Self::Output {
-        if self.type_id == *MAP {
-            let map = self.data.to_map_mut();
-
-            map.0.entry(index).or_insert(NULL_ANY.clone())
-        } else {
-            unsafe {
-                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
-                let ptr = uninit.as_ptr() as *mut Self::Output;
-                *ptr = NULL_ANY.clone();
-                &mut *ptr
-            }
-        }
+    #[test]
+    fn test_map_indexer() {
+        let mut a = Any::from(HashMap::new());
+        a[Any::from(1)] = Any::new(1);
+        a[Any::from(2)] = Any::new(2);
+        a[3] = Any::new(3);
+        assert_eq!(a[Any::from(1)], Any::new(1));
+        assert_eq!(a[Any::from(2)], Any::new(2));
+        assert_eq!(a[Any::from(3)], Any::new(3));
+        assert_eq!(a[Any::from(4)], Any::new(null));
     }
 }
 
