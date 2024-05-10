@@ -1794,6 +1794,14 @@ mod test_div_for_any {
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
     }
+
+    #[test]
+    fn test_div_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a /= b;
+        assert_eq!(a, Any::new(0_i64));
+    }
 }
 
 impl Not for Any {
