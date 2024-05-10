@@ -1908,54 +1908,6 @@ impl Hash for Any {
     }
 }
 
-impl Index<usize> for Any {
-    type Output = Any;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        if self.type_id == *ARRAY {
-            let array = self.data.to_array_ref();
-            if index >= array.0.len() {
-                return &NULL_ANY;
-            }
-
-            &array.0[index]
-        } else if self.type_id == *MAP {
-            let map = self.data.to_map_ref();
-
-            let key = Any::new(index);
-            map.0.get(&key).unwrap_or(&NULL_ANY)
-        } else {
-            &NULL_ANY
-        }
-    }
-}
-
-impl IndexMut<usize> for Any {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        if self.type_id == *ARRAY {
-            let array = self.data.to_array_mut();
-            if index >= array.0.len() {
-                unsafe {
-                    let uninit: std::mem::MaybeUninit<Self::Output> =
-                        std::mem::MaybeUninit::uninit();
-                    let ptr = uninit.as_ptr() as *mut Self::Output;
-                    *ptr = NULL_ANY.clone();
-                    return &mut *ptr;
-                }
-            }
-
-            &mut array.0[index]
-        } else {
-            unsafe {
-                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
-                let ptr = uninit.as_ptr() as *mut Self::Output;
-                *ptr = NULL_ANY.clone();
-                &mut *ptr
-            }
-        }
-    }
-}
-
 impl<T> Index<T> for Any
 where
     T: Into<Any>,
@@ -1965,7 +1917,15 @@ where
     fn index(&self, index: T) -> &Self::Output {
         let key: Any = index.into();
 
-        if self.type_id == *MAP {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_ref();
+            let key = key.data.to_integer() as usize;
+            if key >= array.0.len() {
+                return &NULL_ANY;
+            }
+
+            &array.0[key]
+        } else if self.type_id == *MAP {
             let map = self.data.to_map_ref();
 
             map.0.get(&key).unwrap_or(&NULL_ANY)
@@ -1982,7 +1942,21 @@ where
     fn index_mut(&mut self, index: T) -> &mut Self::Output {
         let key: Any = index.into();
 
-        if self.type_id == *MAP {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array_mut();
+            let key = key.data.to_integer() as usize;
+            if key >= array.0.len() {
+                unsafe {
+                    let uninit: std::mem::MaybeUninit<Self::Output> =
+                        std::mem::MaybeUninit::uninit();
+                    let ptr = uninit.as_ptr() as *mut Self::Output;
+                    *ptr = NULL_ANY.clone();
+                    return &mut *ptr;
+                }
+            }
+
+            &mut array.0[key]
+        } else if self.type_id == *MAP {
             let map = self.data.to_map_mut();
 
             if let None = map.0.get(&key) {
