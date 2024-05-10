@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1740,6 +1740,12 @@ impl Div for Any {
         } else {
             Any::new(f64::NAN)
         }
+    }
+}
+
+impl DivAssign for Any {
+    fn div_assign(&mut self, other: Self) {
+        *self = self.clone() / other;
     }
 }
 
