@@ -74,6 +74,9 @@ pub trait ToArray {
 // Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
+    fn to_map_ref(&self) -> &Map {
+        &EMPTY_MAP
+    }
 }
 
 // Trait for casting: Defines how to convert when cast to a boolean.
@@ -838,6 +841,10 @@ impl ToMap for Map {
     fn to_map(&self) -> Map {
         self.clone()
     }
+
+    fn to_map_ref(&self) -> &Map {
+        self
+    }
 }
 
 impl ToBoolean for Map {
@@ -963,6 +970,7 @@ lazy_static::lazy_static! {
 
     static ref NULL_ANY: Any = Any::new(null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
+    static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
 
 impl Add for Any {
@@ -1858,6 +1866,20 @@ mod test_indexer_for_any {
         assert_eq!(a[1], Any::new(2));
         assert_eq!(a[2], Any::new(3));
         assert_eq!(a[3], Any::new(null));
+    }
+}
+
+impl Index<Any> for Any {
+    type Output = Any;
+
+    fn index(&self, index: Any) -> &Self::Output {
+        if self.type_id == *MAP {
+            let map = self.data.to_map_ref();
+
+            map.0.get(&index).unwrap_or(&NULL_ANY)
+        } else {
+            &NULL_ANY
+        }
     }
 }
 
