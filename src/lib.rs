@@ -74,8 +74,13 @@ pub trait ToArray {
 // Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
+
     fn to_map_ref(&self) -> &Map {
         &EMPTY_MAP
+    }
+
+    fn to_map_mut(&mut self) -> &mut Map {
+        unreachable!()
     }
 }
 
@@ -843,6 +848,10 @@ impl ToMap for Map {
     }
 
     fn to_map_ref(&self) -> &Map {
+        self
+    }
+
+    fn to_map_mut(&mut self) -> &mut Map {
         self
     }
 }
@@ -1879,6 +1888,23 @@ impl Index<Any> for Any {
             map.0.get(&index).unwrap_or(&NULL_ANY)
         } else {
             &NULL_ANY
+        }
+    }
+}
+
+impl IndexMut<Any> for Any {
+    fn index_mut(&mut self, index: Any) -> &mut Self::Output {
+        if self.type_id == *MAP {
+            let map = self.data.to_map_mut();
+
+            map.0.entry(index).or_insert(NULL_ANY.clone())
+        } else {
+            unsafe {
+                let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
+                let ptr = uninit.as_ptr() as *mut Self::Output;
+                *ptr = NULL_ANY.clone();
+                &mut *ptr
+            }
         }
     }
 }
