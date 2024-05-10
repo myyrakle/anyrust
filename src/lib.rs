@@ -586,6 +586,50 @@ impl ToBoolean for u64 {
 }
 // ---------------
 
+// usize 트레잇 구현
+impl From<usize> for Any {
+    fn from(value: usize) -> Self {
+        Any::new(value)
+    }
+}
+
+impl ToInteger for usize {
+    fn to_integer(&self) -> i64 {
+        *self as i64
+    }
+}
+
+impl ToStr for usize {
+    fn to_str(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl ToFloat for usize {
+    fn to_float(&self) -> f64 {
+        *self as f64
+    }
+}
+
+impl ToArray for usize {
+    fn to_array(&self) -> Array {
+        vec![Any::new(*self)].into()
+    }
+}
+
+impl ToMap for usize {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for usize {
+    fn to_boolean(&self) -> bool {
+        *self != 0
+    }
+}
+// ---------------
+
 // f32 트레잇 구현
 impl From<f32> for Any {
     fn from(value: f32) -> Self {
