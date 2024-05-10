@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Index, IndexMut, Mul, Not, Sub},
+    ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Not, Sub},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1212,6 +1212,12 @@ impl Add for Any {
             let b = other.data.to_string();
             Any::new(a + &b)
         }
+    }
+}
+
+impl AddAssign for Any {
+    fn add_assign(&mut self, other: Self) {
+        *self = self.clone() + other;
     }
 }
 
