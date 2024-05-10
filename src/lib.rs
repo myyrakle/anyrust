@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, Div, Index, IndexMut, Mul, Not, Sub},
+    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -1215,6 +1215,12 @@ impl Add for Any {
     }
 }
 
+impl AddAssign for Any {
+    fn add_assign(&mut self, other: Self) {
+        *self = self.clone() + other;
+    }
+}
+
 #[cfg(test)]
 mod test_add_for_any {
     use super::*;
@@ -1271,6 +1277,14 @@ mod test_add_for_any {
             let result = test_case.a + test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
+    }
+
+    #[test]
+    fn test_add_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a += b;
+        assert_eq!(a, Any::new(15_i64));
     }
 }
 
@@ -1385,6 +1399,12 @@ impl Sub for Any {
     }
 }
 
+impl SubAssign for Any {
+    fn sub_assign(&mut self, other: Self) {
+        *self = self.clone() - other;
+    }
+}
+
 #[cfg(test)]
 mod test_sub_for_any {
     use super::*;
@@ -1429,6 +1449,14 @@ mod test_sub_for_any {
             let result = test_case.a - test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
+    }
+
+    #[test]
+    fn test_sub_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a -= b;
+        assert_eq!(a, Any::new(-5_i64));
     }
 }
 
@@ -1543,6 +1571,12 @@ impl Mul for Any {
     }
 }
 
+impl MulAssign for Any {
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.clone() * other;
+    }
+}
+
 #[cfg(test)]
 mod test_mul_for_any {
     use super::*;
@@ -1587,6 +1621,14 @@ mod test_mul_for_any {
             let result = test_case.a * test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
+    }
+
+    #[test]
+    fn test_mul_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a *= b;
+        assert_eq!(a, Any::new(50_i64));
     }
 }
 
@@ -1701,6 +1743,12 @@ impl Div for Any {
     }
 }
 
+impl DivAssign for Any {
+    fn div_assign(&mut self, other: Self) {
+        *self = self.clone() / other;
+    }
+}
+
 #[cfg(test)]
 mod test_div_for_any {
     use super::*;
@@ -1745,6 +1793,14 @@ mod test_div_for_any {
             let result = test_case.a / test_case.b;
             assert_eq!(result, test_case.result, "TC: {}", test_case.name);
         }
+    }
+
+    #[test]
+    fn test_div_assign() {
+        let mut a = Any::new(5_i64);
+        let b = Any::new(10_i64);
+        a /= b;
+        assert_eq!(a, Any::new(0_i64));
     }
 }
 
