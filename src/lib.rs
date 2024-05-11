@@ -261,6 +261,15 @@ mod test_map {
         m.insert(Any::new("key2"), Any::new("value2"));
         assert_eq!(m.length(), 2);
     }
+
+    #[test]
+    fn test_is_empty() {
+        let mut m = Map::new();
+        assert!(m.is_empty());
+
+        m.insert(Any::new("key"), Any::new("value"));
+        assert!(!m.is_empty());
+    }
 }
 
 // castable trait
