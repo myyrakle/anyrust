@@ -1060,6 +1060,10 @@ impl Any {
             || self.type_id == *ISIZE
             || self.type_id == *USIZE
     }
+
+    pub fn is_float(&self) -> bool {
+        self.type_id == *F32 || self.type_id == *F64
+    }
 }
 
 lazy_static::lazy_static! {
