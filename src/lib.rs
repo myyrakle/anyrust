@@ -142,6 +142,15 @@ mod test_array {
         a.push(Any::new(3));
         assert_eq!(a.length(), 3);
     }
+
+    #[test]
+    fn test_is_empty() {
+        let mut a = Array::new();
+        assert!(a.is_empty());
+
+        a.push(Any::new(1));
+        assert!(!a.is_empty());
+    }
 }
 
 // key-value map type
