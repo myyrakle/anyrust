@@ -34,6 +34,44 @@ pub const null: Null = Null {};
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
+impl Array {
+    pub fn new() -> Self {
+        Self(Vec::new())
+    }
+
+    pub fn push(&mut self, value: Any) {
+        self.0.push(value);
+    }
+
+    pub fn pop(&mut self) -> Option<Any> {
+        self.0.pop()
+    }
+
+    pub fn shift(&mut self) -> Option<Any> {
+        let first_value = self.0.first().cloned()?;
+        self.0.remove(0);
+
+        Some(first_value)
+    }
+
+    pub fn unshift(&mut self, value: Any) {
+        self.0.insert(0, value);
+    }
+
+    pub fn length(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    pub fn reverse(&mut self) -> &mut Self {
+        self.0.reverse();
+        self
+    }
+}
+
 // key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
