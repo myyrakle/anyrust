@@ -182,11 +182,11 @@ impl Map {
         Self(HashMap::new())
     }
 
-    pub fn insert(&mut self, key: Any, value: Any) {
+    pub fn set(&mut self, key: Any, value: Any) {
         self.0.insert(key, value);
     }
 
-    pub fn remove(&mut self, key: &Any) -> Option<Any> {
+    pub fn delete(&mut self, key: &Any) -> Option<Any> {
         self.0.remove(key)
     }
 
@@ -212,22 +212,22 @@ mod test_map {
     use super::*;
 
     #[test]
-    fn test_insert() {
+    fn test_set() {
         let mut m = Map::new();
         assert_eq!(m.length(), 0);
 
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
         assert_eq!(m.length(), 1);
         assert_eq!(m.0.get(&Any::new("key")).unwrap(), &Any::new("value"));
     }
 
     #[test]
-    fn test_remove() {
+    fn test_delete() {
         let mut m = Map::new();
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
         assert_eq!(m.length(), 1);
 
-        let value = m.remove(&Any::new("key")).unwrap();
+        let value = m.delete(&Any::new("key")).unwrap();
         assert_eq!(value, Any::new("value"));
         assert_eq!(m.length(), 0);
     }
@@ -235,7 +235,7 @@ mod test_map {
     #[test]
     fn test_get() {
         let mut m = Map::new();
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
 
         let value = m.get(&Any::new("key")).unwrap();
         assert_eq!(value, &Any::new("value"));
@@ -244,7 +244,7 @@ mod test_map {
     #[test]
     fn test_get_mut() {
         let mut m = Map::new();
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
 
         let value = m.get_mut(&Any::new("key")).unwrap();
         assert_eq!(value, &Any::new("value"));
@@ -255,10 +255,10 @@ mod test_map {
         let mut m = Map::new();
         assert_eq!(m.length(), 0);
 
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
         assert_eq!(m.length(), 1);
 
-        m.insert(Any::new("key2"), Any::new("value2"));
+        m.set(Any::new("key2"), Any::new("value2"));
         assert_eq!(m.length(), 2);
     }
 
@@ -267,7 +267,7 @@ mod test_map {
         let mut m = Map::new();
         assert!(m.is_empty());
 
-        m.insert(Any::new("key"), Any::new("value"));
+        m.set(Any::new("key"), Any::new("value"));
         assert!(!m.is_empty());
     }
 }
@@ -1670,6 +1670,40 @@ impl Any {
     pub fn reverse(&mut self) -> Any {
         if self.is_array() {
             self.data.to_array_mut().reverse().clone().into()
+        } else {
+            Any::from(null)
+        }
+    }
+}
+
+// map operations
+impl Any {
+    pub fn set(&mut self, key: Any, value: Any) {
+        if self.is_map() {
+            self.data.to_map_mut().0.insert(key, value);
+        }
+    }
+
+    pub fn get(&self, key: Any) -> Any {
+        if self.is_map() {
+            self.data
+                .to_map()
+                .0
+                .get(&key)
+                .cloned()
+                .unwrap_or_else(|| Any::from(null))
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn delete(&mut self, key: Any) -> Any {
+        if self.is_map() {
+            self.data
+                .to_map_mut()
+                .0
+                .remove(&key)
+                .unwrap_or_else(|| Any::from(null))
         } else {
             Any::from(null)
         }
