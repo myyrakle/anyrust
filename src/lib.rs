@@ -1072,6 +1072,10 @@ impl Any {
     pub fn is_nan(&self) -> bool {
         self.is_float() && self.data.to_float().is_nan()
     }
+
+    pub fn is_string(&self) -> bool {
+        self.type_id == *STRING || self.type_id == *STR
+    }
 }
 
 lazy_static::lazy_static! {
