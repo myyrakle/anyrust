@@ -1,4 +1,4 @@
-use anyrust::Any;
+use anyrust::*;
 
 fn main() {
     let some = anyrust::array![1, 2, 3, 4, 5];

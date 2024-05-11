@@ -34,6 +34,145 @@ pub const null: Null = Null {};
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
+impl Array {
+    pub fn new() -> Self {
+        Self(Vec::new())
+    }
+
+    pub fn push(&mut self, value: Any) {
+        self.0.push(value);
+    }
+
+    pub fn pop(&mut self) -> Option<Any> {
+        self.0.pop()
+    }
+
+    pub fn shift(&mut self) -> Option<Any> {
+        let first_value = self.0.first().cloned()?;
+        self.0.remove(0);
+
+        Some(first_value)
+    }
+
+    pub fn unshift(&mut self, value: Any) {
+        self.0.insert(0, value);
+    }
+
+    pub fn length(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    pub fn reverse(&mut self) -> &mut Self {
+        self.0.reverse();
+        self
+    }
+}
+
+#[cfg(test)]
+mod test_array {
+    use super::*;
+
+    #[test]
+    fn test_push() {
+        let mut a = Array::new();
+        assert_eq!(a.length(), 0);
+
+        a.push(Any::new(1));
+        assert_eq!(a.length(), 1);
+        assert_eq!(a.0[0], Any::from(1));
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut a = Array::new();
+        a.push(Any::new(1));
+        a.push(Any::new(2));
+        a.push(Any::new(3));
+
+        assert_eq!(a.length(), 3);
+
+        let value = a.pop().unwrap();
+        assert_eq!(value, Any::from(3));
+        assert_eq!(a.length(), 2);
+    }
+
+    #[test]
+    fn test_shift() {
+        let mut a = Array::new();
+        a.push(Any::new(1));
+        a.push(Any::new(2));
+        a.push(Any::new(3));
+
+        assert_eq!(a.length(), 3);
+
+        let value = a.shift().unwrap();
+        assert_eq!(value, Any::from(1));
+        assert_eq!(a.length(), 2);
+    }
+
+    #[test]
+    fn test_unshift() {
+        let mut a = Array::new();
+        assert_eq!(a.length(), 0);
+
+        a.unshift(Any::new(1));
+        assert_eq!(a.length(), 1);
+        assert_eq!(a.0[0], Any::from(1));
+
+        a.unshift(Any::new(2));
+        assert_eq!(a.length(), 2);
+        assert_eq!(a.0[0], Any::from(2));
+    }
+
+    #[test]
+    fn test_length() {
+        let mut a = Array::new();
+        assert_eq!(a.length(), 0);
+
+        a.push(Any::new(1));
+        assert_eq!(a.length(), 1);
+
+        a.push(Any::new(2));
+        assert_eq!(a.length(), 2);
+
+        a.push(Any::new(3));
+        assert_eq!(a.length(), 3);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let mut a = Array::new();
+        assert!(a.is_empty());
+
+        a.push(Any::new(1));
+        assert!(!a.is_empty());
+    }
+
+    #[test]
+    fn test_reverse() {
+        let mut a = Array::new();
+        a.push(Any::new(1));
+        a.push(Any::new(2));
+        a.push(Any::new(3));
+
+        assert_eq!(a.length(), 3);
+        assert_eq!(a.0[0], Any::from(1));
+        assert_eq!(a.0[1], Any::from(2));
+        assert_eq!(a.0[2], Any::from(3));
+
+        a.reverse();
+
+        assert_eq!(a.length(), 3);
+        assert_eq!(a.0[0], Any::from(3));
+        assert_eq!(a.0[1], Any::from(2));
+        assert_eq!(a.0[2], Any::from(1));
+    }
+}
+
 // key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
@@ -1384,6 +1523,61 @@ mod test_type_check_for_any {
 
         let a = Any::from(HashMap::new());
         assert!(!a.is_boolean());
+    }
+}
+
+// array operations
+impl Any {
+    pub fn push(&mut self, value: Any) {
+        if self.is_array() {
+            self.data.to_array_mut().push(value)
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<Any> {
+        if self.is_array() {
+            self.data.to_array_mut().pop()
+        } else {
+            None
+        }
+    }
+
+    pub fn unshift(&mut self, value: Any) {
+        if self.is_array() {
+            self.data.to_array_mut().unshift(value)
+        }
+    }
+
+    pub fn shift(&mut self) -> Option<Any> {
+        if self.is_array() {
+            self.data.to_array_mut().shift()
+        } else {
+            None
+        }
+    }
+
+    pub fn length(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().length().into()
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn is_empty(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().is_empty().into()
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn reverse(&mut self) -> Any {
+        if self.is_array() {
+            self.data.to_array_mut().reverse().clone().into()
+        } else {
+            Any::from(null)
+        }
     }
 }
 
