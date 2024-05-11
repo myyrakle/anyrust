@@ -1046,15 +1046,358 @@ impl Any {
     // }
 }
 
+// type check functions
+impl Any {
+    pub fn is_integer(&self) -> bool {
+        self.type_id == *I8
+            || self.type_id == *I16
+            || self.type_id == *I32
+            || self.type_id == *I64
+            || self.type_id == *U8
+            || self.type_id == *U16
+            || self.type_id == *U32
+            || self.type_id == *U64
+            || self.type_id == *ISIZE
+            || self.type_id == *USIZE
+    }
+
+    pub fn is_float(&self) -> bool {
+        self.type_id == *F32 || self.type_id == *F64
+    }
+
+    pub fn is_number(&self) -> bool {
+        self.is_integer() || self.is_float()
+    }
+
+    pub fn is_nan(&self) -> bool {
+        self.is_float() && self.data.to_float().is_nan()
+    }
+
+    pub fn is_string(&self) -> bool {
+        self.type_id == *STRING || self.type_id == *STR
+    }
+
+    pub fn is_array(&self) -> bool {
+        self.type_id == *ARRAY
+    }
+
+    pub fn is_map(&self) -> bool {
+        self.type_id == *MAP
+    }
+
+    pub fn is_null(&self) -> bool {
+        self.type_id == *NULL
+    }
+
+    pub fn is_boolean(&self) -> bool {
+        self.type_id == *BOOL
+    }
+}
+
+#[cfg(test)]
+mod test_type_check_for_any {
+    use super::*;
+
+    #[test]
+    fn test_is_integer() {
+        let a = Any::new(5_i64);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u64);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i32);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u32);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i16);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u16);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i8);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u8);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_isize);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_usize);
+        assert!(a.is_integer());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_integer());
+
+        let a = Any::new("5");
+        assert!(!a.is_integer());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_integer());
+
+        let a = Any::new(true);
+        assert!(!a.is_integer());
+
+        let a = Any::new(null);
+        assert!(!a.is_integer());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_integer());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_integer());
+    }
+
+    #[test]
+    fn test_is_float() {
+        let a = Any::new(5.0);
+        assert!(a.is_float());
+
+        let a = Any::new(5.0_f32);
+        assert!(a.is_float());
+
+        let a = Any::new(5.0_f64);
+        assert!(a.is_float());
+
+        let a = Any::new(5);
+        assert!(!a.is_float());
+
+        let a = Any::new("5");
+        assert!(!a.is_float());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_float());
+
+        let a = Any::new(true);
+        assert!(!a.is_float());
+
+        let a = Any::new(null);
+        assert!(!a.is_float());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_float());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_float());
+    }
+
+    #[test]
+    fn test_is_number() {
+        let a = Any::new(5.0);
+        assert!(a.is_number());
+
+        let a = Any::new(5.0_f32);
+        assert!(a.is_number());
+
+        let a = Any::new(5.0_f64);
+        assert!(a.is_number());
+
+        let a = Any::new(5);
+        assert!(a.is_number());
+
+        let a = Any::new("5");
+        assert!(!a.is_number());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_number());
+
+        let a = Any::new(true);
+        assert!(!a.is_number());
+
+        let a = Any::new(null);
+        assert!(!a.is_number());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_number());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_number());
+    }
+
+    #[test]
+    fn test_is_nan() {
+        let a = Any::new(f64::NAN);
+        assert!(a.is_nan());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_nan());
+
+        let a = Any::new(5);
+        assert!(!a.is_nan());
+
+        let a = Any::new("5");
+        assert!(!a.is_nan());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_nan());
+
+        let a = Any::new(true);
+        assert!(!a.is_nan());
+
+        let a = Any::new(null);
+        assert!(!a.is_nan());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_nan());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_nan());
+    }
+
+    #[test]
+    fn test_is_string() {
+        let a = Any::new("5");
+        assert!(a.is_string());
+
+        let a = Any::new("5.0");
+        assert!(a.is_string());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_string());
+
+        let a = Any::new(5);
+        assert!(!a.is_string());
+
+        let a = Any::new(true);
+        assert!(!a.is_string());
+
+        let a = Any::new(null);
+        assert!(!a.is_string());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_string());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_string());
+    }
+
+    #[test]
+    fn test_is_array() {
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(a.is_array());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_array());
+
+        let a = Any::new("5");
+        assert!(!a.is_array());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_array());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_array());
+
+        let a = Any::new(5);
+        assert!(!a.is_array());
+
+        let a = Any::new(true);
+        assert!(!a.is_array());
+
+        let a = Any::new(null);
+        assert!(!a.is_array());
+    }
+
+    #[test]
+    fn test_is_map() {
+        let a = Any::from(HashMap::new());
+        assert!(a.is_map());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_map());
+
+        let a = Any::new("5");
+        assert!(!a.is_map());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_map());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_map());
+
+        let a = Any::new(5);
+        assert!(!a.is_map());
+
+        let a = Any::new(true);
+        assert!(!a.is_map());
+
+        let a = Any::new(null);
+        assert!(!a.is_map());
+    }
+
+    #[test]
+    fn test_is_null() {
+        let a = Any::new(null);
+        assert!(a.is_null());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_null());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_null());
+
+        let a = Any::new("5");
+        assert!(!a.is_null());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_null());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_null());
+
+        let a = Any::new(5);
+        assert!(!a.is_null());
+
+        let a = Any::new(true);
+        assert!(!a.is_null());
+    }
+
+    #[test]
+    fn test_is_boolean() {
+        let a = Any::new(true);
+        assert!(a.is_boolean());
+
+        let a = Any::new(false);
+        assert!(a.is_boolean());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_boolean());
+
+        let a = Any::new(5);
+        assert!(!a.is_boolean());
+
+        let a = Any::new("5");
+        assert!(!a.is_boolean());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_boolean());
+
+        let a = Any::new(null);
+        assert!(!a.is_boolean());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_boolean());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_boolean());
+    }
+}
+
 lazy_static::lazy_static! {
     pub static ref I8: TypeId = TypeId::of::<i8>();
     pub static ref I16: TypeId = TypeId::of::<i16>();
     pub static ref I32: TypeId = TypeId::of::<i32>();
     pub static ref I64: TypeId = TypeId::of::<i64>();
+    pub static ref ISIZE: TypeId = TypeId::of::<isize>();
     pub static ref U8: TypeId = TypeId::of::<u8>();
     pub static ref U16: TypeId = TypeId::of::<u16>();
     pub static ref U32: TypeId = TypeId::of::<u32>();
     pub static ref U64: TypeId = TypeId::of::<u64>();
+    pub static ref USIZE: TypeId = TypeId::of::<usize>();
     pub static ref F32: TypeId = TypeId::of::<f32>();
     pub static ref F64: TypeId = TypeId::of::<f64>();
     pub static ref STRING: TypeId = TypeId::of::<String>();
