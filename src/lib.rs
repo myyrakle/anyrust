@@ -240,6 +240,15 @@ mod test_map {
         let value = m.get(&Any::new("key")).unwrap();
         assert_eq!(value, &Any::new("value"));
     }
+
+    #[test]
+    fn test_get_mut() {
+        let mut m = Map::new();
+        m.insert(Any::new("key"), Any::new("value"));
+
+        let value = m.get_mut(&Any::new("key")).unwrap();
+        assert_eq!(value, &Any::new("value"));
+    }
 }
 
 // castable trait
