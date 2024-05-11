@@ -177,6 +177,36 @@ mod test_array {
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
 
+impl Map {
+    pub fn new() -> Self {
+        Self(HashMap::new())
+    }
+
+    pub fn insert(&mut self, key: Any, value: Any) {
+        self.0.insert(key, value);
+    }
+
+    pub fn remove(&mut self, key: &Any) -> Option<Any> {
+        self.0.remove(key)
+    }
+
+    pub fn get(&self, key: &Any) -> Option<&Any> {
+        self.0.get(key)
+    }
+
+    pub fn get_mut(&mut self, key: &Any) -> Option<&mut Any> {
+        self.0.get_mut(key)
+    }
+
+    pub fn length(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
 // castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
