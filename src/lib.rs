@@ -1080,6 +1080,10 @@ impl Any {
     pub fn is_array(&self) -> bool {
         self.type_id == *ARRAY
     }
+
+    pub fn is_map(&self) -> bool {
+        self.type_id == *MAP
+    }
 }
 
 lazy_static::lazy_static! {
