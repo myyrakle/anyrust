@@ -113,6 +113,20 @@ mod test_array {
         assert_eq!(value, Any::from(1));
         assert_eq!(a.length(), 2);
     }
+
+    #[test]
+    fn test_unshift() {
+        let mut a = Array::new();
+        assert_eq!(a.length(), 0);
+
+        a.unshift(Any::new(1));
+        assert_eq!(a.length(), 1);
+        assert_eq!(a.0[0], Any::from(1));
+
+        a.unshift(Any::new(2));
+        assert_eq!(a.length(), 2);
+        assert_eq!(a.0[0], Any::from(2));
+    }
 }
 
 // key-value map type
