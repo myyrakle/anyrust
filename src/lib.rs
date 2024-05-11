@@ -1217,6 +1217,36 @@ mod test_type_check_for_any {
         let a = Any::from(HashMap::new());
         assert!(!a.is_number());
     }
+
+    #[test]
+    fn test_is_nan() {
+        let a = Any::new(f64::NAN);
+        assert!(a.is_nan());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_nan());
+
+        let a = Any::new(5);
+        assert!(!a.is_nan());
+
+        let a = Any::new("5");
+        assert!(!a.is_nan());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_nan());
+
+        let a = Any::new(true);
+        assert!(!a.is_nan());
+
+        let a = Any::new(null);
+        assert!(!a.is_nan());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_nan());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_nan());
+    }
 }
 
 lazy_static::lazy_static! {
