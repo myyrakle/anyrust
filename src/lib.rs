@@ -1526,6 +1526,61 @@ mod test_type_check_for_any {
     }
 }
 
+// array operations
+impl Any {
+    pub fn push(&mut self, value: Any) {
+        if self.is_array() {
+            self.data.to_array_mut().push(value)
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<Any> {
+        if self.is_array() {
+            self.data.to_array_mut().pop()
+        } else {
+            None
+        }
+    }
+
+    pub fn unshift(&mut self, value: Any) {
+        if self.is_array() {
+            self.data.to_array_mut().unshift(value)
+        }
+    }
+
+    pub fn shift(&mut self) -> Option<Any> {
+        if self.is_array() {
+            self.data.to_array_mut().shift()
+        } else {
+            None
+        }
+    }
+
+    pub fn length(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().length().into()
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn is_empty(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().is_empty().into()
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn reverse(&mut self) -> Any {
+        if self.is_array() {
+            self.data.to_array_mut().reverse().clone().into()
+        } else {
+            Any::from(null)
+        }
+    }
+}
+
 lazy_static::lazy_static! {
     pub static ref I8: TypeId = TypeId::of::<i8>();
     pub static ref I16: TypeId = TypeId::of::<i16>();
