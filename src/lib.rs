@@ -1301,6 +1301,33 @@ mod test_type_check_for_any {
         let a = Any::new(null);
         assert!(!a.is_array());
     }
+
+    #[test]
+    fn test_is_map() {
+        let a = Any::from(HashMap::new());
+        assert!(a.is_map());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_map());
+
+        let a = Any::new("5");
+        assert!(!a.is_map());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_map());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_map());
+
+        let a = Any::new(5);
+        assert!(!a.is_map());
+
+        let a = Any::new(true);
+        assert!(!a.is_map());
+
+        let a = Any::new(null);
+        assert!(!a.is_map());
+    }
 }
 
 lazy_static::lazy_static! {
