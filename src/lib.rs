@@ -1046,15 +1046,33 @@ impl Any {
     // }
 }
 
+// type check functions
+impl Any {
+    pub fn is_integer(&self) -> bool {
+        self.type_id == *I8
+            || self.type_id == *I16
+            || self.type_id == *I32
+            || self.type_id == *I64
+            || self.type_id == *U8
+            || self.type_id == *U16
+            || self.type_id == *U32
+            || self.type_id == *U64
+            || self.type_id == *ISIZE
+            || self.type_id == *USIZE
+    }
+}
+
 lazy_static::lazy_static! {
     pub static ref I8: TypeId = TypeId::of::<i8>();
     pub static ref I16: TypeId = TypeId::of::<i16>();
     pub static ref I32: TypeId = TypeId::of::<i32>();
     pub static ref I64: TypeId = TypeId::of::<i64>();
+    pub static ref ISIZE: TypeId = TypeId::of::<isize>();
     pub static ref U8: TypeId = TypeId::of::<u8>();
     pub static ref U16: TypeId = TypeId::of::<u16>();
     pub static ref U32: TypeId = TypeId::of::<u32>();
     pub static ref U64: TypeId = TypeId::of::<u64>();
+    pub static ref USIZE: TypeId = TypeId::of::<usize>();
     pub static ref F32: TypeId = TypeId::of::<f32>();
     pub static ref F64: TypeId = TypeId::of::<f64>();
     pub static ref STRING: TypeId = TypeId::of::<String>();
