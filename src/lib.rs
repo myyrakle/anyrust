@@ -207,6 +207,21 @@ impl Map {
     }
 }
 
+#[cfg(test)]
+mod test_map {
+    use super::*;
+
+    #[test]
+    fn test_insert() {
+        let mut m = Map::new();
+        assert_eq!(m.length(), 0);
+
+        m.insert(Any::new("key"), Any::new("value"));
+        assert_eq!(m.length(), 1);
+        assert_eq!(m.0.get(&Any::new("key")).unwrap(), &Any::new("value"));
+    }
+}
+
 // castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
