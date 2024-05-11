@@ -1328,6 +1328,33 @@ mod test_type_check_for_any {
         let a = Any::new(null);
         assert!(!a.is_map());
     }
+
+    #[test]
+    fn test_is_null() {
+        let a = Any::new(null);
+        assert!(a.is_null());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_null());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_null());
+
+        let a = Any::new("5");
+        assert!(!a.is_null());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_null());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_null());
+
+        let a = Any::new(5);
+        assert!(!a.is_null());
+
+        let a = Any::new(true);
+        assert!(!a.is_null());
+    }
 }
 
 lazy_static::lazy_static! {
