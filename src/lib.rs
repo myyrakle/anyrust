@@ -1088,6 +1088,10 @@ impl Any {
     pub fn is_null(&self) -> bool {
         self.type_id == *NULL
     }
+
+    pub fn is_boolean(&self) -> bool {
+        self.type_id == *BOOL
+    }
 }
 
 lazy_static::lazy_static! {
