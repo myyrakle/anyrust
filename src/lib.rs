@@ -151,6 +151,26 @@ mod test_array {
         a.push(Any::new(1));
         assert!(!a.is_empty());
     }
+
+    #[test]
+    fn test_reverse() {
+        let mut a = Array::new();
+        a.push(Any::new(1));
+        a.push(Any::new(2));
+        a.push(Any::new(3));
+
+        assert_eq!(a.length(), 3);
+        assert_eq!(a.0[0], Any::from(1));
+        assert_eq!(a.0[1], Any::from(2));
+        assert_eq!(a.0[2], Any::from(3));
+
+        a.reverse();
+
+        assert_eq!(a.length(), 3);
+        assert_eq!(a.0[0], Any::from(3));
+        assert_eq!(a.0[1], Any::from(2));
+        assert_eq!(a.0[2], Any::from(1));
+    }
 }
 
 // key-value map type
