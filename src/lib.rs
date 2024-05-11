@@ -177,6 +177,101 @@ mod test_array {
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
 
+impl Map {
+    pub fn new() -> Self {
+        Self(HashMap::new())
+    }
+
+    pub fn set(&mut self, key: Any, value: Any) {
+        self.0.insert(key, value);
+    }
+
+    pub fn delete(&mut self, key: &Any) -> Option<Any> {
+        self.0.remove(key)
+    }
+
+    pub fn get(&self, key: &Any) -> Option<&Any> {
+        self.0.get(key)
+    }
+
+    pub fn get_mut(&mut self, key: &Any) -> Option<&mut Any> {
+        self.0.get_mut(key)
+    }
+
+    pub fn length(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
+#[cfg(test)]
+mod test_map {
+    use super::*;
+
+    #[test]
+    fn test_set() {
+        let mut m = Map::new();
+        assert_eq!(m.length(), 0);
+
+        m.set(Any::new("key"), Any::new("value"));
+        assert_eq!(m.length(), 1);
+        assert_eq!(m.0.get(&Any::new("key")).unwrap(), &Any::new("value"));
+    }
+
+    #[test]
+    fn test_delete() {
+        let mut m = Map::new();
+        m.set(Any::new("key"), Any::new("value"));
+        assert_eq!(m.length(), 1);
+
+        let value = m.delete(&Any::new("key")).unwrap();
+        assert_eq!(value, Any::new("value"));
+        assert_eq!(m.length(), 0);
+    }
+
+    #[test]
+    fn test_get() {
+        let mut m = Map::new();
+        m.set(Any::new("key"), Any::new("value"));
+
+        let value = m.get(&Any::new("key")).unwrap();
+        assert_eq!(value, &Any::new("value"));
+    }
+
+    #[test]
+    fn test_get_mut() {
+        let mut m = Map::new();
+        m.set(Any::new("key"), Any::new("value"));
+
+        let value = m.get_mut(&Any::new("key")).unwrap();
+        assert_eq!(value, &Any::new("value"));
+    }
+
+    #[test]
+    fn test_length() {
+        let mut m = Map::new();
+        assert_eq!(m.length(), 0);
+
+        m.set(Any::new("key"), Any::new("value"));
+        assert_eq!(m.length(), 1);
+
+        m.set(Any::new("key2"), Any::new("value2"));
+        assert_eq!(m.length(), 2);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let mut m = Map::new();
+        assert!(m.is_empty());
+
+        m.set(Any::new("key"), Any::new("value"));
+        assert!(!m.is_empty());
+    }
+}
+
 // castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
 
@@ -1556,9 +1651,58 @@ impl Any {
         }
     }
 
+    pub fn reverse(&mut self) -> Any {
+        if self.is_array() {
+            self.data.to_array_mut().reverse().clone().into()
+        } else {
+            Any::from(null)
+        }
+    }
+}
+
+// map operations
+impl Any {
+    pub fn set(&mut self, key: Any, value: Any) {
+        if self.is_map() {
+            self.data.to_map_mut().0.insert(key, value);
+        }
+    }
+
+    pub fn get(&self, key: Any) -> Any {
+        if self.is_map() {
+            self.data
+                .to_map()
+                .0
+                .get(&key)
+                .cloned()
+                .unwrap_or_else(|| Any::from(null))
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn delete(&mut self, key: Any) -> Any {
+        if self.is_map() {
+            self.data
+                .to_map_mut()
+                .0
+                .remove(&key)
+                .unwrap_or_else(|| Any::from(null))
+        } else {
+            Any::from(null)
+        }
+    }
+}
+
+// common operations
+impl Any {
     pub fn length(&self) -> Any {
         if self.is_array() {
             self.data.to_array().length().into()
+        } else if self.is_map() {
+            self.data.to_map().length().into()
+        } else if self.is_string() {
+            self.data.to_string().len().into()
         } else {
             Any::from(null)
         }
@@ -1567,14 +1711,10 @@ impl Any {
     pub fn is_empty(&self) -> Any {
         if self.is_array() {
             self.data.to_array().is_empty().into()
-        } else {
-            Any::from(null)
-        }
-    }
-
-    pub fn reverse(&mut self) -> Any {
-        if self.is_array() {
-            self.data.to_array_mut().reverse().clone().into()
+        } else if self.is_map() {
+            self.data.to_map().is_empty().into()
+        } else if self.is_string() {
+            self.data.to_string().is_empty().into()
         } else {
             Any::from(null)
         }
