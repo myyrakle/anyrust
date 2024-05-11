@@ -72,6 +72,21 @@ impl Array {
     }
 }
 
+#[cfg(test)]
+mod test_array {
+    use super::*;
+
+    #[test]
+    fn test_push() {
+        let mut a = Array::new();
+        assert_eq!(a.length(), 0);
+
+        a.push(Any::new(1));
+        assert_eq!(a.length(), 1);
+        assert_eq!(a.0[0], Any::from(1));
+    }
+}
+
 // key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
