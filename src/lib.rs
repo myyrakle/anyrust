@@ -1651,22 +1651,6 @@ impl Any {
         }
     }
 
-    pub fn length(&self) -> Any {
-        if self.is_array() {
-            self.data.to_array().length().into()
-        } else {
-            Any::from(null)
-        }
-    }
-
-    pub fn is_empty(&self) -> Any {
-        if self.is_array() {
-            self.data.to_array().is_empty().into()
-        } else {
-            Any::from(null)
-        }
-    }
-
     pub fn reverse(&mut self) -> Any {
         if self.is_array() {
             self.data.to_array_mut().reverse().clone().into()
@@ -1704,6 +1688,33 @@ impl Any {
                 .0
                 .remove(&key)
                 .unwrap_or_else(|| Any::from(null))
+        } else {
+            Any::from(null)
+        }
+    }
+}
+
+// common operations
+impl Any {
+    pub fn length(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().length().into()
+        } else if self.is_map() {
+            self.data.to_map().length().into()
+        } else if self.is_string() {
+            self.data.to_string().len().into()
+        } else {
+            Any::from(null)
+        }
+    }
+
+    pub fn is_empty(&self) -> Any {
+        if self.is_array() {
+            self.data.to_array().is_empty().into()
+        } else if self.is_map() {
+            self.data.to_map().is_empty().into()
+        } else if self.is_string() {
+            self.data.to_string().is_empty().into()
         } else {
             Any::from(null)
         }
