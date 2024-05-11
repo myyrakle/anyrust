@@ -1094,6 +1094,65 @@ impl Any {
     }
 }
 
+#[cfg(test)]
+mod test_type_check_for_any {
+    use super::*;
+
+    #[test]
+    fn test_is_integer() {
+        let a = Any::new(5_i64);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u64);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i32);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u32);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i16);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u16);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_i8);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_u8);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_isize);
+        assert!(a.is_integer());
+
+        let a = Any::new(5_usize);
+        assert!(a.is_integer());
+
+        let a = Any::new(5.0);
+        assert!(!a.is_integer());
+
+        let a = Any::new("5");
+        assert!(!a.is_integer());
+
+        let a = Any::new("5.0");
+        assert!(!a.is_integer());
+
+        let a = Any::new(true);
+        assert!(!a.is_integer());
+
+        let a = Any::new(null);
+        assert!(!a.is_integer());
+
+        let a = Any::from(vec![1, 2, 3]);
+        assert!(!a.is_integer());
+
+        let a = Any::from(HashMap::new());
+        assert!(!a.is_integer());
+    }
+}
+
 lazy_static::lazy_static! {
     pub static ref I8: TypeId = TypeId::of::<i8>();
     pub static ref I16: TypeId = TypeId::of::<i16>();
