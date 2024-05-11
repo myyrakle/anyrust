@@ -1084,6 +1084,10 @@ impl Any {
     pub fn is_map(&self) -> bool {
         self.type_id == *MAP
     }
+
+    pub fn is_null(&self) -> bool {
+        self.type_id == *NULL
+    }
 }
 
 lazy_static::lazy_static! {
