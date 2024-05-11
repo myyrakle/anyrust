@@ -1064,6 +1064,10 @@ impl Any {
     pub fn is_float(&self) -> bool {
         self.type_id == *F32 || self.type_id == *F64
     }
+
+    pub fn is_number(&self) -> bool {
+        self.is_integer() || self.is_float()
+    }
 }
 
 lazy_static::lazy_static! {
