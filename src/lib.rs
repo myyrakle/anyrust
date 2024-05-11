@@ -1076,6 +1076,10 @@ impl Any {
     pub fn is_string(&self) -> bool {
         self.type_id == *STRING || self.type_id == *STR
     }
+
+    pub fn is_array(&self) -> bool {
+        self.type_id == *ARRAY
+    }
 }
 
 lazy_static::lazy_static! {
