@@ -1068,6 +1068,10 @@ impl Any {
     pub fn is_number(&self) -> bool {
         self.is_integer() || self.is_float()
     }
+
+    pub fn is_nan(&self) -> bool {
+        self.is_float() && self.data.to_float().is_nan()
+    }
 }
 
 lazy_static::lazy_static! {
