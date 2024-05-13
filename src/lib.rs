@@ -1,3 +1,5 @@
+#![allow(non_upper_case_globals)]
+
 use std::{
     any::TypeId,
     collections::HashMap,
@@ -30,6 +32,7 @@ pub struct Null;
 #[allow(non_upper_case_globals)]
 pub const _null: Null = Null {};
 
+#[allow(non_upper_case_globals)]
 // array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
@@ -1741,7 +1744,8 @@ lazy_static::lazy_static! {
     pub static ref MAP: TypeId = TypeId::of::<Map>();
     pub static ref NULL: TypeId = TypeId::of::<Null>();
 
-    static ref NULL_ANY: Any = Any::new(_null);
+
+    static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
@@ -2654,16 +2658,16 @@ where
             let array = self.data.to_array_ref();
             let key = key.data.to_integer() as usize;
             if key >= array.0.len() {
-                return &NULL_ANY;
+                return &null;
             }
 
             &array.0[key]
         } else if self.type_id == *MAP {
             let map = self.data.to_map_ref();
 
-            map.0.get(&key).unwrap_or(&NULL_ANY)
+            map.0.get(&key).unwrap_or(&null)
         } else {
-            &NULL_ANY
+            &null
         }
     }
 }
@@ -2683,7 +2687,7 @@ where
                     let uninit: std::mem::MaybeUninit<Self::Output> =
                         std::mem::MaybeUninit::uninit();
                     let ptr = uninit.as_ptr() as *mut Self::Output;
-                    *ptr = NULL_ANY.clone();
+                    *ptr = null.clone();
                     return &mut *ptr;
                 }
             }
@@ -2693,7 +2697,7 @@ where
             let map = self.data.to_map_mut();
 
             if let None = map.0.get(&key) {
-                map.0.insert(key.clone(), NULL_ANY.clone());
+                map.0.insert(key.clone(), null.clone());
             }
 
             map.0.get_mut(&key).unwrap()
@@ -2701,7 +2705,7 @@ where
             unsafe {
                 let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
                 let ptr = uninit.as_ptr() as *mut Self::Output;
-                *ptr = NULL_ANY.clone();
+                *ptr = null.clone();
                 &mut *ptr
             }
         }
