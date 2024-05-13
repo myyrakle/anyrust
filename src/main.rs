@@ -1,9 +1,12 @@
 use anyrust::*;
 
 fn main() {
-    let a = Any::new(5);
-    let b = Any::new("10");
-    let result = a + b;
+    let mut map = Any::from(_null);
+    println!("{}", map.to_string());
 
-    println!("result: {result}");
+    map.set("key".into(), 123.into());
+    println!("{}", map.to_string());
+
+    map.set("key".into(), "value".into());
+    println!("{}", map.to_string());
 }

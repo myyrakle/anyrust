@@ -1,3 +1,5 @@
+#![allow(non_upper_case_globals)]
+
 use std::{
     any::TypeId,
     collections::HashMap,
@@ -28,8 +30,9 @@ pub struct Null;
 
 // null value
 #[allow(non_upper_case_globals)]
-pub const null: Null = Null {};
+pub const _null: Null = Null {};
 
+#[allow(non_upper_case_globals)]
 // array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
@@ -1376,7 +1379,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_integer());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_integer());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1409,7 +1412,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_float());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_float());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1442,7 +1445,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_number());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_number());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1472,7 +1475,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_nan());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_nan());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1499,7 +1502,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_string());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_string());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1532,7 +1535,7 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_array());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_array());
     }
 
@@ -1559,13 +1562,13 @@ mod test_type_check_for_any {
         let a = Any::new(true);
         assert!(!a.is_map());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_map());
     }
 
     #[test]
     fn test_is_null() {
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(a.is_null());
 
         let a = Any::from(HashMap::new());
@@ -1610,7 +1613,7 @@ mod test_type_check_for_any {
         let a = Any::new("5.0");
         assert!(!a.is_boolean());
 
-        let a = Any::new(null);
+        let a = Any::new(_null);
         assert!(!a.is_boolean());
 
         let a = Any::from(vec![1, 2, 3]);
@@ -1655,7 +1658,7 @@ impl Any {
         if self.is_array() {
             self.data.to_array_mut().reverse().clone().into()
         } else {
-            Any::from(null)
+            Any::from(_null)
         }
     }
 }
@@ -1675,9 +1678,9 @@ impl Any {
                 .0
                 .get(&key)
                 .cloned()
-                .unwrap_or_else(|| Any::from(null))
+                .unwrap_or_else(|| Any::from(_null))
         } else {
-            Any::from(null)
+            Any::from(_null)
         }
     }
 
@@ -1687,9 +1690,9 @@ impl Any {
                 .to_map_mut()
                 .0
                 .remove(&key)
-                .unwrap_or_else(|| Any::from(null))
+                .unwrap_or_else(|| Any::from(_null))
         } else {
-            Any::from(null)
+            Any::from(_null)
         }
     }
 }
@@ -1704,7 +1707,7 @@ impl Any {
         } else if self.is_string() {
             self.data.to_string().len().into()
         } else {
-            Any::from(null)
+            Any::from(_null)
         }
     }
 
@@ -1716,7 +1719,7 @@ impl Any {
         } else if self.is_string() {
             self.data.to_string().is_empty().into()
         } else {
-            Any::from(null)
+            Any::from(_null)
         }
     }
 }
@@ -1741,7 +1744,8 @@ lazy_static::lazy_static! {
     pub static ref MAP: TypeId = TypeId::of::<Map>();
     pub static ref NULL: TypeId = TypeId::of::<Null>();
 
-    static ref NULL_ANY: Any = Any::new(null);
+
+    static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
@@ -1751,7 +1755,7 @@ impl Add for Any {
 
     fn add(self, other: Self) -> Self {
         if self.type_id == *NULL || other.type_id == *NULL {
-            Any::new(null)
+            Any::new(_null)
         } else if self.type_id == other.type_id {
             match self.type_id {
                 type_id if type_id == *I8 => {
@@ -1970,7 +1974,7 @@ impl Sub for Any {
 
     fn sub(self, other: Self) -> Self {
         if self.type_id == *NULL || other.type_id == *NULL {
-            Any::new(null)
+            Any::new(_null)
         } else if self.type_id == other.type_id {
             match self.type_id {
                 type_id if type_id == *I8 => {
@@ -2142,7 +2146,7 @@ impl Mul for Any {
 
     fn mul(self, other: Self) -> Self {
         if self.type_id == *NULL || other.type_id == *NULL {
-            Any::new(null)
+            Any::new(_null)
         } else if self.type_id == other.type_id {
             match self.type_id {
                 type_id if type_id == *I8 => {
@@ -2314,7 +2318,7 @@ impl Div for Any {
 
     fn div(self, other: Self) -> Self {
         if self.type_id == *NULL || other.type_id == *NULL {
-            Any::new(null)
+            Any::new(_null)
         } else if self.type_id == other.type_id {
             match self.type_id {
                 type_id if type_id == *I8 => {
@@ -2486,7 +2490,7 @@ impl Not for Any {
 
     fn not(self) -> Self {
         if self.type_id == *NULL {
-            Any::new(null)
+            Any::new(_null)
         } else {
             let a = self.data.to_boolean();
             Any::new(!a)
@@ -2612,7 +2616,7 @@ mod test_eq_for_any {
         assert_ne!(a, b);
 
         let a = Any::new(5);
-        let b = Any::new(null);
+        let b = Any::new(_null);
         assert_ne!(a, b);
     }
 }
@@ -2654,16 +2658,16 @@ where
             let array = self.data.to_array_ref();
             let key = key.data.to_integer() as usize;
             if key >= array.0.len() {
-                return &NULL_ANY;
+                return &null;
             }
 
             &array.0[key]
         } else if self.type_id == *MAP {
             let map = self.data.to_map_ref();
 
-            map.0.get(&key).unwrap_or(&NULL_ANY)
+            map.0.get(&key).unwrap_or(&null)
         } else {
-            &NULL_ANY
+            &null
         }
     }
 }
@@ -2683,7 +2687,7 @@ where
                     let uninit: std::mem::MaybeUninit<Self::Output> =
                         std::mem::MaybeUninit::uninit();
                     let ptr = uninit.as_ptr() as *mut Self::Output;
-                    *ptr = NULL_ANY.clone();
+                    *ptr = null.clone();
                     return &mut *ptr;
                 }
             }
@@ -2693,7 +2697,7 @@ where
             let map = self.data.to_map_mut();
 
             if let None = map.0.get(&key) {
-                map.0.insert(key.clone(), NULL_ANY.clone());
+                map.0.insert(key.clone(), null.clone());
             }
 
             map.0.get_mut(&key).unwrap()
@@ -2701,7 +2705,7 @@ where
             unsafe {
                 let uninit: std::mem::MaybeUninit<Self::Output> = std::mem::MaybeUninit::uninit();
                 let ptr = uninit.as_ptr() as *mut Self::Output;
-                *ptr = NULL_ANY.clone();
+                *ptr = null.clone();
                 &mut *ptr
             }
         }
@@ -2718,7 +2722,7 @@ mod test_indexer_for_any {
         assert_eq!(a[0], Any::new(1));
         assert_eq!(a[1], Any::new(2));
         assert_eq!(a[2], Any::new(3));
-        assert_eq!(a[3], Any::new(null));
+        assert_eq!(a[3], Any::new(_null));
     }
 
     #[test]
@@ -2730,7 +2734,7 @@ mod test_indexer_for_any {
         assert_eq!(a[Any::from(1)], Any::new(1));
         assert_eq!(a[Any::from(2)], Any::new(2));
         assert_eq!(a[Any::from(3)], Any::new(3));
-        assert_eq!(a[Any::from(4)], Any::new(null));
+        assert_eq!(a[Any::from(4)], Any::new(_null));
     }
 }
 
