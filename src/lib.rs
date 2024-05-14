@@ -179,6 +179,12 @@ mod test_array {
 #[derive(Debug, Clone)]
 pub struct Pair((Any, Any));
 
+impl Pair {
+    pub fn new(key: Any, value: Any) -> Self {
+        Self((key, value))
+    }
+}
+
 // key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
