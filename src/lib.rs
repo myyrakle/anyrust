@@ -431,6 +431,61 @@ impl ToStr for Array {
     }
 }
 
+// Pair 트레잇 구현
+impl From<(Any, Any)> for Pair {
+    fn from(value: (Any, Any)) -> Self {
+        Pair(value)
+    }
+}
+
+impl From<Pair> for Any {
+    fn from(pair: Pair) -> Self {
+        Any::new(pair)
+    }
+}
+
+impl Display for Pair {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.0 .0, self.0 .1)
+    }
+}
+
+impl ToInteger for Pair {
+    fn to_integer(&self) -> i64 {
+        0
+    }
+}
+
+impl ToStr for Pair {
+    fn to_str(&self) -> String {
+        format!("({}, {})", self.0 .0, self.0 .1)
+    }
+}
+
+impl ToFloat for Pair {
+    fn to_float(&self) -> f64 {
+        0.0
+    }
+}
+
+impl ToArray for Pair {
+    fn to_array(&self) -> Array {
+        vec![Any::new(self.clone())].into()
+    }
+}
+
+impl ToMap for Pair {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for Pair {
+    fn to_boolean(&self) -> bool {
+        true
+    }
+}
+
 // i8 트레잇 구현
 impl From<i8> for Any {
     fn from(value: i8) -> Self {
