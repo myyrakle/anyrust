@@ -25,7 +25,7 @@ impl<
 }
 
 // null type
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Null;
 
 // null value
@@ -1809,7 +1809,7 @@ lazy_static::lazy_static! {
     pub static ref NULL: TypeId = TypeId::of::<Null>();
 
 
-    static ref null: Any = Any::new(_null);
+    pub static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
