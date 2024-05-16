@@ -2,7 +2,6 @@
 
 use std::{
     any::TypeId,
-    array::IntoIter,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
@@ -286,9 +285,9 @@ mod test_map {
 }
 
 // castable trait
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
+pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair {}
 
-impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr> AutoCast for T {}
+impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair> AutoCast for T {}
 
 // Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
@@ -329,6 +328,11 @@ pub trait ToMap {
     fn to_map_mut(&mut self) -> &mut Map {
         unreachable!()
     }
+}
+
+// Trait for casting: Defines how to convert when cast to a Pair.
+pub trait ToPair {
+    fn to_pair(&self) -> Pair;
 }
 
 // Trait for casting: Defines how to convert when cast to a boolean.
