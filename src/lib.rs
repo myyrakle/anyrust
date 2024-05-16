@@ -183,6 +183,10 @@ impl Pair {
     pub fn new(key: Any, value: Any) -> Self {
         Self((key, value))
     }
+
+    pub fn to_tuple(&self) -> (Any, Any) {
+        self.0.to_owned()
+    }
 }
 
 // key-value map type
@@ -1449,6 +1453,37 @@ impl Any {
 
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
+    }
+}
+
+// type cast functions
+impl Any {
+    pub fn to_integer(&self) -> i64 {
+        self.data.to_integer()
+    }
+
+    pub fn to_float(&self) -> f64 {
+        self.data.to_float()
+    }
+
+    pub fn to_str(&self) -> String {
+        self.data.to_str()
+    }
+
+    pub fn to_array(&self) -> Array {
+        self.data.to_array()
+    }
+
+    pub fn to_map(&self) -> Map {
+        self.data.to_map()
+    }
+
+    pub fn to_boolean(&self) -> bool {
+        self.data.to_boolean()
+    }
+
+    pub fn to_pair(&self) -> Pair {
+        self.data.to_pair()
     }
 }
 
