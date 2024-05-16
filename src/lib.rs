@@ -25,7 +25,7 @@ impl<
 }
 
 // null type
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Null;
 
 // null value
@@ -183,6 +183,10 @@ impl Pair {
     pub fn new(key: Any, value: Any) -> Self {
         Self((key, value))
     }
+
+    pub fn to_tuple(&self) -> (Any, Any) {
+        self.0.to_owned()
+    }
 }
 
 // key-value map type
@@ -285,9 +289,9 @@ mod test_map {
 }
 
 // castable trait
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr {}
+pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair {}
 
-impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr> AutoCast for T {}
+impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair> AutoCast for T {}
 
 // Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
@@ -327,6 +331,13 @@ pub trait ToMap {
 
     fn to_map_mut(&mut self) -> &mut Map {
         unreachable!()
+    }
+}
+
+// Trait for casting: Defines how to convert when cast to a Pair.
+pub trait ToPair {
+    fn to_pair(&self) -> Pair {
+        Pair::new(null.clone(), null.clone())
     }
 }
 
@@ -437,6 +448,14 @@ impl ToStr for Array {
     }
 }
 
+impl ToPair for Array {
+    fn to_pair(&self) -> Pair {
+        let lhs = self.0.get(0).unwrap_or(&null).clone();
+        let rhs = self.0.get(1).unwrap_or(&null).clone();
+        Pair::new(lhs, rhs)
+    }
+}
+
 // Pair 트레잇 구현
 impl From<(Any, Any)> for Pair {
     fn from(value: (Any, Any)) -> Self {
@@ -492,6 +511,12 @@ impl ToBoolean for Pair {
     }
 }
 
+impl ToPair for Pair {
+    fn to_pair(&self) -> Pair {
+        self.clone()
+    }
+}
+
 // i8 트레잇 구현
 impl From<i8> for Any {
     fn from(value: i8) -> Self {
@@ -534,6 +559,8 @@ impl ToBoolean for i8 {
         *self != 0
     }
 }
+
+impl ToPair for i8 {}
 // ---------------
 
 // i16 트레잇 구현
@@ -578,6 +605,8 @@ impl ToBoolean for i16 {
         *self != 0
     }
 }
+
+impl ToPair for i16 {}
 // ---------------
 
 // i32 트레잇 구현
@@ -622,6 +651,8 @@ impl ToBoolean for i32 {
         *self != 0
     }
 }
+
+impl ToPair for i32 {}
 // ---------------
 
 // i64 트레잇 구현
@@ -666,6 +697,8 @@ impl ToBoolean for i64 {
         *self != 0
     }
 }
+
+impl ToPair for i64 {}
 // ---------------
 
 // isize 트레잇 구현
@@ -711,6 +744,9 @@ impl ToBoolean for isize {
     }
 }
 
+impl ToPair for isize {}
+// ---------------
+
 // u8 트레잇 구현
 impl From<u8> for Any {
     fn from(value: u8) -> Self {
@@ -753,6 +789,8 @@ impl ToBoolean for u8 {
         *self != 0
     }
 }
+
+impl ToPair for u8 {}
 // ---------------
 
 // u16 트레잇 구현
@@ -797,6 +835,8 @@ impl ToBoolean for u16 {
         *self != 0
     }
 }
+
+impl ToPair for u16 {}
 // ---------------
 
 // u32 트레잇 구현
@@ -841,6 +881,8 @@ impl ToBoolean for u32 {
         *self != 0
     }
 }
+
+impl ToPair for u32 {}
 // ---------------
 
 // u64 트레잇 구현
@@ -885,6 +927,8 @@ impl ToBoolean for u64 {
         *self != 0
     }
 }
+
+impl ToPair for u64 {}
 // ---------------
 
 // usize 트레잇 구현
@@ -929,6 +973,8 @@ impl ToBoolean for usize {
         *self != 0
     }
 }
+
+impl ToPair for usize {}
 // ---------------
 
 // f32 트레잇 구현
@@ -973,6 +1019,8 @@ impl ToBoolean for f32 {
         *self != 0.0
     }
 }
+
+impl ToPair for f32 {}
 // ---------------
 
 // f64 트레잇 구현
@@ -1017,6 +1065,8 @@ impl ToBoolean for f64 {
         *self != 0.0
     }
 }
+
+impl ToPair for f64 {}
 // ---------------
 
 // 문자열 트레잇 구현
@@ -1061,6 +1111,8 @@ impl ToBoolean for String {
         self.parse().unwrap_or(false)
     }
 }
+
+impl ToPair for String {}
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
@@ -1105,6 +1157,8 @@ impl ToBoolean for &str {
         self.parse().unwrap_or(false)
     }
 }
+
+impl ToPair for &str {}
 // ---------------
 
 // 불리언 트레잇 구현
@@ -1157,6 +1211,8 @@ impl ToBoolean for bool {
         *self
     }
 }
+
+impl ToPair for bool {}
 // ---------------
 
 // Map 트레잇 구현
@@ -1250,6 +1306,9 @@ impl ToBoolean for Map {
     }
 }
 
+impl ToPair for Map {}
+// ---------------
+
 // Null 트레잇 구현
 impl From<Null> for Any {
     fn from(value: Null) -> Self {
@@ -1298,6 +1357,8 @@ impl Display for Null {
         write!(f, "null")
     }
 }
+
+impl ToPair for Null {}
 // ---------------
 
 #[derive(Debug)]
@@ -1392,6 +1453,37 @@ impl Any {
 
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
+    }
+}
+
+// type cast functions
+impl Any {
+    pub fn to_integer(&self) -> i64 {
+        self.data.to_integer()
+    }
+
+    pub fn to_float(&self) -> f64 {
+        self.data.to_float()
+    }
+
+    pub fn to_str(&self) -> String {
+        self.data.to_str()
+    }
+
+    pub fn to_array(&self) -> Array {
+        self.data.to_array()
+    }
+
+    pub fn to_map(&self) -> Map {
+        self.data.to_map()
+    }
+
+    pub fn to_boolean(&self) -> bool {
+        self.data.to_boolean()
+    }
+
+    pub fn to_pair(&self) -> Pair {
+        self.data.to_pair()
     }
 }
 
@@ -1809,7 +1901,7 @@ lazy_static::lazy_static! {
     pub static ref NULL: TypeId = TypeId::of::<Null>();
 
 
-    static ref null: Any = Any::new(_null);
+    pub static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
 }
@@ -2801,6 +2893,25 @@ mod test_indexer_for_any {
         assert_eq!(a[Any::from(4)], Any::new(_null));
     }
 }
+
+impl IntoIterator for Any {
+    type Item = Any;
+    type IntoIter = AnyIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array();
+            Box::new(array.0.into_iter())
+        } else if self.type_id == *MAP {
+            let map = self.data.to_map();
+            Box::new(map.0.into_iter().map(|(k, v)| Any::from(Pair::new(k, v))))
+        } else {
+            panic!("Cannot iterate over non-iterable type");
+        }
+    }
+}
+
+type AnyIterator = Box<dyn Iterator<Item = Any>>;
 
 // macro
 #[macro_export]
