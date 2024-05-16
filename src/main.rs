@@ -5,7 +5,7 @@ fn main() {
     println!("{}", map.to_string());
 
     for pair in map {
-        let pair = pair.downcast::<Pair>().unwrap();
+        let pair = pair.to_pair()
 
         println!("{}: {}", k, v);
     }

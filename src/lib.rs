@@ -507,6 +507,12 @@ impl ToBoolean for Pair {
     }
 }
 
+impl ToPair for Pair {
+    fn to_pair(&self) -> Pair {
+        self.clone()
+    }
+}
+
 // i8 트레잇 구현
 impl From<i8> for Any {
     fn from(value: i8) -> Self {
@@ -549,6 +555,8 @@ impl ToBoolean for i8 {
         *self != 0
     }
 }
+
+impl ToPair for i8 {}
 // ---------------
 
 // i16 트레잇 구현
@@ -593,6 +601,8 @@ impl ToBoolean for i16 {
         *self != 0
     }
 }
+
+impl ToPair for i16 {}
 // ---------------
 
 // i32 트레잇 구현
@@ -637,6 +647,8 @@ impl ToBoolean for i32 {
         *self != 0
     }
 }
+
+impl ToPair for i32 {}
 // ---------------
 
 // i64 트레잇 구현
@@ -681,6 +693,8 @@ impl ToBoolean for i64 {
         *self != 0
     }
 }
+
+impl ToPair for i64 {}
 // ---------------
 
 // isize 트레잇 구현
@@ -726,6 +740,9 @@ impl ToBoolean for isize {
     }
 }
 
+impl ToPair for isize {}
+// ---------------
+
 // u8 트레잇 구현
 impl From<u8> for Any {
     fn from(value: u8) -> Self {
@@ -768,6 +785,8 @@ impl ToBoolean for u8 {
         *self != 0
     }
 }
+
+impl ToPair for u8 {}
 // ---------------
 
 // u16 트레잇 구현
@@ -812,6 +831,8 @@ impl ToBoolean for u16 {
         *self != 0
     }
 }
+
+impl ToPair for u16 {}
 // ---------------
 
 // u32 트레잇 구현
@@ -856,6 +877,8 @@ impl ToBoolean for u32 {
         *self != 0
     }
 }
+
+impl ToPair for u32 {}
 // ---------------
 
 // u64 트레잇 구현
@@ -900,6 +923,8 @@ impl ToBoolean for u64 {
         *self != 0
     }
 }
+
+impl ToPair for u64 {}
 // ---------------
 
 // usize 트레잇 구현
@@ -944,6 +969,8 @@ impl ToBoolean for usize {
         *self != 0
     }
 }
+
+impl ToPair for usize {}
 // ---------------
 
 // f32 트레잇 구현
@@ -988,6 +1015,8 @@ impl ToBoolean for f32 {
         *self != 0.0
     }
 }
+
+impl ToPair for f32 {}
 // ---------------
 
 // f64 트레잇 구현
@@ -1032,6 +1061,8 @@ impl ToBoolean for f64 {
         *self != 0.0
     }
 }
+
+impl ToPair for f64 {}
 // ---------------
 
 // 문자열 트레잇 구현
@@ -1076,6 +1107,8 @@ impl ToBoolean for String {
         self.parse().unwrap_or(false)
     }
 }
+
+impl ToPair for String {}
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
@@ -1120,6 +1153,8 @@ impl ToBoolean for &str {
         self.parse().unwrap_or(false)
     }
 }
+
+impl ToPair for &str {}
 // ---------------
 
 // 불리언 트레잇 구현
@@ -1172,6 +1207,8 @@ impl ToBoolean for bool {
         *self
     }
 }
+
+impl ToPair for bool {}
 // ---------------
 
 // Map 트레잇 구현
@@ -1265,6 +1302,9 @@ impl ToBoolean for Map {
     }
 }
 
+impl ToPair for Map {}
+// ---------------
+
 // Null 트레잇 구현
 impl From<Null> for Any {
     fn from(value: Null) -> Self {
@@ -1313,6 +1353,8 @@ impl Display for Null {
         write!(f, "null")
     }
 }
+
+impl ToPair for Null {}
 // ---------------
 
 #[derive(Debug)]
