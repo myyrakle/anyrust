@@ -2,6 +2,7 @@
 
 use std::{
     any::TypeId,
+    array::IntoIter,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
@@ -2801,6 +2802,25 @@ mod test_indexer_for_any {
         assert_eq!(a[Any::from(4)], Any::new(_null));
     }
 }
+
+impl IntoIterator for Any {
+    type Item = Any;
+    type IntoIter = AnyIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        if self.type_id == *ARRAY {
+            let array = self.data.to_array();
+            Box::new(array.0.into_iter())
+        } else if self.type_id == *MAP {
+            let map = self.data.to_map();
+            Box::new(map.0.into_iter().map(|(k, v)| Any::from(Pair::new(k, v))))
+        } else {
+            panic!("Cannot iterate over non-iterable type");
+        }
+    }
+}
+
+type AnyIterator = Box<dyn Iterator<Item = Any>>;
 
 // macro
 #[macro_export]

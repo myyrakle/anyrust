@@ -4,9 +4,9 @@ fn main() {
     let mut map = Any::new(Pair::new("key".into(), "value".into()));
     println!("{}", map.to_string());
 
-    map.set("key".into(), 123.into());
-    println!("{}", map.to_string());
+    for pair in map {
+        let pair = pair.downcast::<Pair>().unwrap();
 
-    map.set("key".into(), "value".into());
-    println!("{}", map.to_string());
+        println!("{}: {}", k, v);
+    }
 }
