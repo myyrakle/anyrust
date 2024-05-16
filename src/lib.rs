@@ -332,7 +332,9 @@ pub trait ToMap {
 
 // Trait for casting: Defines how to convert when cast to a Pair.
 pub trait ToPair {
-    fn to_pair(&self) -> Pair;
+    fn to_pair(&self) -> Pair {
+        Pair::new(null.clone(), null.clone())
+    }
 }
 
 // Trait for casting: Defines how to convert when cast to a boolean.
@@ -439,6 +441,14 @@ impl ToStr for Array {
         }
         result.push_str("]");
         result
+    }
+}
+
+impl ToPair for Array {
+    fn to_pair(&self) -> Pair {
+        let lhs = self.0.get(0).unwrap_or(&null).clone();
+        let rhs = self.0.get(1).unwrap_or(&null).clone();
+        Pair::new(lhs, rhs)
     }
 }
 
