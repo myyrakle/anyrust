@@ -42,8 +42,8 @@ impl Array {
         Self(Vec::new())
     }
 
-    pub fn push(&mut self, value: Any) {
-        self.0.push(value);
+    pub fn push(&mut self, value: impl Into<Any>) {
+        self.0.push(value.into());
     }
 
     pub fn pop(&mut self) -> Option<Any> {
@@ -57,8 +57,8 @@ impl Array {
         Some(first_value)
     }
 
-    pub fn unshift(&mut self, value: Any) {
-        self.0.insert(0, value);
+    pub fn unshift(&mut self, value: impl Into<Any>) {
+        self.0.insert(0, value.into());
     }
 
     pub fn length(&self) -> usize {
@@ -180,8 +180,8 @@ mod test_array {
 pub struct Pair((Any, Any));
 
 impl Pair {
-    pub fn new(key: Any, value: Any) -> Self {
-        Self((key, value))
+    pub fn new(key: impl Into<Any>, value: impl Into<Any>) -> Self {
+        Self((key.into(), value.into()))
     }
 
     pub fn to_tuple(&self) -> (Any, Any) {
@@ -198,8 +198,8 @@ impl Map {
         Self(HashMap::new())
     }
 
-    pub fn set(&mut self, key: Any, value: Any) {
-        self.0.insert(key, value);
+    pub fn set(&mut self, key: impl Into<Any>, value: impl Into<Any>) {
+        self.0.insert(key.into(), value.into());
     }
 
     pub fn delete(&mut self, key: &Any) -> Option<Any> {
@@ -1782,9 +1782,9 @@ mod test_type_check_for_any {
 
 // array operations
 impl Any {
-    pub fn push(&mut self, value: Any) {
+    pub fn push(&mut self, value: impl Into<Any>) {
         if self.is_array() {
-            self.data.to_array_mut().push(value)
+            self.data.to_array_mut().push(value.into())
         }
     }
 
@@ -1796,9 +1796,9 @@ impl Any {
         }
     }
 
-    pub fn unshift(&mut self, value: Any) {
+    pub fn unshift(&mut self, value: impl Into<Any>) {
         if self.is_array() {
-            self.data.to_array_mut().unshift(value)
+            self.data.to_array_mut().unshift(value.into())
         }
     }
 
@@ -1821,18 +1821,18 @@ impl Any {
 
 // map operations
 impl Any {
-    pub fn set(&mut self, key: Any, value: Any) {
+    pub fn set(&mut self, key: impl Into<Any>, value: impl Into<Any>) {
         if self.is_map() {
-            self.data.to_map_mut().0.insert(key, value);
+            self.data.to_map_mut().0.insert(key.into(), value.into());
         }
     }
 
-    pub fn get(&self, key: Any) -> Any {
+    pub fn get(&self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
                 .to_map()
                 .0
-                .get(&key)
+                .get(&key.into())
                 .cloned()
                 .unwrap_or_else(|| Any::from(_null))
         } else {
@@ -1840,12 +1840,12 @@ impl Any {
         }
     }
 
-    pub fn delete(&mut self, key: Any) -> Any {
+    pub fn delete(&mut self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
                 .to_map_mut()
                 .0
-                .remove(&key)
+                .remove(&key.into())
                 .unwrap_or_else(|| Any::from(_null))
         } else {
             Any::from(_null)
