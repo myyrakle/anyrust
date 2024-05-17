@@ -1,6 +1,6 @@
 # anyrust
 
-![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.1.0%20alpha-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
+![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.2.0%20alpha-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
 
 A library that provides a type system as flexible and powerful as Javascript.
 
@@ -26,8 +26,31 @@ fn main() {
 
 The basic integer type, basic float type, boolean type, and string type support mutual conversion with Any without any problem.
 
-## Array, Map
+## Array
 
 Arrays are supported through the `anyrust::Array` type. This is compatible with `Vec<Any>`.
+```rust
+    let arr = array![1, 2, 3, 4, 5];
+
+    for e in arr {
+        println!("{e}");
+    }
+```
+
+## Map
 
 KV Map is supported through the `anyrust::Map` type. This is compatible with `HashMap<Any,Any>`.
+```rust
+    let mut map = Any::from(Map::new());
+    map.set("name".into(), "John Doe".into());
+    map.set("age".into(), 30.into());
+    map.set("is_adult".into(), true.into());
+
+    println!("{}", map.to_string());
+
+    for e in map {
+        let (k, v) = e.to_pair().to_tuple();
+
+        println!("{}: {}", k, v);
+    }
+```
