@@ -10,7 +10,7 @@ use std::{
 
 use dyn_clone::{clone_trait_object, DynClone};
 
-// any trait
+/// any trait
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone
 {
@@ -24,16 +24,16 @@ impl<
 {
 }
 
-// null type
+/// type of null value
 #[derive(Debug, Clone, Copy)]
 pub struct Null;
 
-// null value
+/// null value
 #[allow(non_upper_case_globals)]
-pub const _null: Null = Null {};
+pub(crate) const _null: Null = Null {};
 
 #[allow(non_upper_case_globals)]
-// array type
+/// array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
 
@@ -176,6 +176,7 @@ mod test_array {
     }
 }
 
+/// Any Tuple type
 #[derive(Debug, Clone)]
 pub struct Pair((Any, Any));
 
@@ -189,7 +190,7 @@ impl Pair {
     }
 }
 
-// key-value map type
+/// key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
 
@@ -288,27 +289,27 @@ mod test_map {
     }
 }
 
-// castable trait
+/// castable trait
 pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair {}
 
 impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair> AutoCast for T {}
 
-// Trait for casting: Defines how to convert when cast to an integer.
+/// Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
     fn to_integer(&self) -> i64;
 }
 
-// Trait for casting: Defines how to convert when cast to a float.
+/// Trait for casting: Defines how to convert when cast to a float.
 pub trait ToFloat {
     fn to_float(&self) -> f64;
 }
 
-// Trait for casting: Defines how to convert when cast to a string.
+/// Trait for casting: Defines how to convert when cast to a string.
 pub trait ToStr {
     fn to_str(&self) -> String;
 }
 
-// Trait for casting: Defines how to convert when cast to an array.
+/// Trait for casting: Defines how to convert when cast to an array.
 pub trait ToArray {
     fn to_array(&self) -> Array;
 
@@ -321,7 +322,7 @@ pub trait ToArray {
     }
 }
 
-// Trait for casting: Defines how to convert when cast to a map.
+/// Trait for casting: Defines how to convert when cast to a map.
 pub trait ToMap {
     fn to_map(&self) -> Map;
 
@@ -334,14 +335,14 @@ pub trait ToMap {
     }
 }
 
-// Trait for casting: Defines how to convert when cast to a Pair.
+/// Trait for casting: Defines how to convert when cast to a Pair.
 pub trait ToPair {
     fn to_pair(&self) -> Pair {
         Pair::new(null.clone(), null.clone())
     }
 }
 
-// Trait for casting: Defines how to convert when cast to a boolean.
+/// Trait for casting: Defines how to convert when cast to a boolean.
 pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
 }
@@ -352,7 +353,7 @@ impl Display for Any {
     }
 }
 
-// array 트레잇 구현
+/// array 트레잇 구현
 impl PartialEq for Array {
     fn eq(&self, other: &Self) -> bool {
         self.0 == other.0
@@ -1361,6 +1362,7 @@ impl Display for Null {
 impl ToPair for Null {}
 // ---------------
 
+/// type for all
 #[derive(Debug)]
 pub struct Any {
     type_id: std::any::TypeId,
@@ -1881,26 +1883,26 @@ impl Any {
 }
 
 lazy_static::lazy_static! {
-    pub static ref I8: TypeId = TypeId::of::<i8>();
-    pub static ref I16: TypeId = TypeId::of::<i16>();
-    pub static ref I32: TypeId = TypeId::of::<i32>();
-    pub static ref I64: TypeId = TypeId::of::<i64>();
-    pub static ref ISIZE: TypeId = TypeId::of::<isize>();
-    pub static ref U8: TypeId = TypeId::of::<u8>();
-    pub static ref U16: TypeId = TypeId::of::<u16>();
-    pub static ref U32: TypeId = TypeId::of::<u32>();
-    pub static ref U64: TypeId = TypeId::of::<u64>();
-    pub static ref USIZE: TypeId = TypeId::of::<usize>();
-    pub static ref F32: TypeId = TypeId::of::<f32>();
-    pub static ref F64: TypeId = TypeId::of::<f64>();
-    pub static ref STRING: TypeId = TypeId::of::<String>();
-    pub static ref STR: TypeId = TypeId::of::<&str>();
-    pub static ref BOOL: TypeId = TypeId::of::<bool>();
-    pub static ref ARRAY: TypeId = TypeId::of::<Array>();
-    pub static ref MAP: TypeId = TypeId::of::<Map>();
-    pub static ref NULL: TypeId = TypeId::of::<Null>();
+    pub(crate) static ref I8: TypeId = TypeId::of::<i8>();
+    pub(crate) static ref I16: TypeId = TypeId::of::<i16>();
+    pub(crate) static ref I32: TypeId = TypeId::of::<i32>();
+    pub(crate) static ref I64: TypeId = TypeId::of::<i64>();
+    pub(crate) static ref ISIZE: TypeId = TypeId::of::<isize>();
+    pub(crate) static ref U8: TypeId = TypeId::of::<u8>();
+    pub(crate) static ref U16: TypeId = TypeId::of::<u16>();
+    pub(crate) static ref U32: TypeId = TypeId::of::<u32>();
+    pub(crate) static ref U64: TypeId = TypeId::of::<u64>();
+    pub(crate) static ref USIZE: TypeId = TypeId::of::<usize>();
+    pub(crate) static ref F32: TypeId = TypeId::of::<f32>();
+    pub(crate) static ref F64: TypeId = TypeId::of::<f64>();
+    pub(crate) static ref STRING: TypeId = TypeId::of::<String>();
+    pub(crate) static ref STR: TypeId = TypeId::of::<&str>();
+    pub(crate) static ref BOOL: TypeId = TypeId::of::<bool>();
+    pub(crate) static ref ARRAY: TypeId = TypeId::of::<Array>();
+    pub(crate) static ref MAP: TypeId = TypeId::of::<Map>();
+    pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
 
-
+    /// null value
     pub static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
