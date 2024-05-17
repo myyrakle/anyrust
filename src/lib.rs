@@ -30,7 +30,7 @@ pub struct Null;
 
 // null value
 #[allow(non_upper_case_globals)]
-pub const _null: Null = Null {};
+pub(crate) const _null: Null = Null {};
 
 #[allow(non_upper_case_globals)]
 // array type
@@ -1881,24 +1881,24 @@ impl Any {
 }
 
 lazy_static::lazy_static! {
-    pub static ref I8: TypeId = TypeId::of::<i8>();
-    pub static ref I16: TypeId = TypeId::of::<i16>();
-    pub static ref I32: TypeId = TypeId::of::<i32>();
-    pub static ref I64: TypeId = TypeId::of::<i64>();
-    pub static ref ISIZE: TypeId = TypeId::of::<isize>();
-    pub static ref U8: TypeId = TypeId::of::<u8>();
-    pub static ref U16: TypeId = TypeId::of::<u16>();
-    pub static ref U32: TypeId = TypeId::of::<u32>();
-    pub static ref U64: TypeId = TypeId::of::<u64>();
-    pub static ref USIZE: TypeId = TypeId::of::<usize>();
-    pub static ref F32: TypeId = TypeId::of::<f32>();
-    pub static ref F64: TypeId = TypeId::of::<f64>();
-    pub static ref STRING: TypeId = TypeId::of::<String>();
-    pub static ref STR: TypeId = TypeId::of::<&str>();
-    pub static ref BOOL: TypeId = TypeId::of::<bool>();
-    pub static ref ARRAY: TypeId = TypeId::of::<Array>();
-    pub static ref MAP: TypeId = TypeId::of::<Map>();
-    pub static ref NULL: TypeId = TypeId::of::<Null>();
+    pub(crate) static ref I8: TypeId = TypeId::of::<i8>();
+    pub(crate) static ref I16: TypeId = TypeId::of::<i16>();
+    pub(crate) static ref I32: TypeId = TypeId::of::<i32>();
+    pub(crate) static ref I64: TypeId = TypeId::of::<i64>();
+    pub(crate) static ref ISIZE: TypeId = TypeId::of::<isize>();
+    pub(crate) static ref U8: TypeId = TypeId::of::<u8>();
+    pub(crate) static ref U16: TypeId = TypeId::of::<u16>();
+    pub(crate) static ref U32: TypeId = TypeId::of::<u32>();
+    pub(crate) static ref U64: TypeId = TypeId::of::<u64>();
+    pub(crate) static ref USIZE: TypeId = TypeId::of::<usize>();
+    pub(crate) static ref F32: TypeId = TypeId::of::<f32>();
+    pub(crate) static ref F64: TypeId = TypeId::of::<f64>();
+    pub(crate) static ref STRING: TypeId = TypeId::of::<String>();
+    pub(crate) static ref STR: TypeId = TypeId::of::<&str>();
+    pub(crate) static ref BOOL: TypeId = TypeId::of::<bool>();
+    pub(crate) static ref ARRAY: TypeId = TypeId::of::<Array>();
+    pub(crate) static ref MAP: TypeId = TypeId::of::<Map>();
+    pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
 
 
     pub static ref null: Any = Any::new(_null);
