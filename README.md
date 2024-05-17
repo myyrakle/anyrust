@@ -1,6 +1,6 @@
 # anyrust
 
-![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.2.0%20alpha-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
+![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.2.1%20alpha-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
 
 A library that provides a type system as flexible and powerful as Javascript.
 
@@ -30,7 +30,9 @@ The basic integer type, basic float type, boolean type, and string type support 
 
 Arrays are supported through the `anyrust::Array` type. This is compatible with `Vec<Any>`.
 ```rust
-    let arr = array![1, 2, 3, 4, 5];
+    let mut arr = array![1, 2, 3, 4, 5];
+    arr.push(4444);
+    arr.push("foo");
 
     for e in arr {
         println!("{e}");
