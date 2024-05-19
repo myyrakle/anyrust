@@ -2,7 +2,6 @@
 
 use std::{
     any::TypeId,
-    array::IntoIter,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
@@ -2922,6 +2921,18 @@ impl IntoIterator for Array {
 
     fn into_iter(self) -> Self::IntoIter {
         Box::new(self.0.into_iter())
+    }
+}
+
+type AnyPairIterator = Box<dyn Iterator<Item = (Any, Any)>>;
+
+impl IntoIterator for Map {
+    type Item = (Any, Any);
+    type IntoIter = AnyPairIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        let foo = Box::new(self.0.into_iter());
+        foo
     }
 }
 
