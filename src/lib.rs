@@ -2,6 +2,7 @@
 
 use std::{
     any::TypeId,
+    array::IntoIter,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
@@ -2914,6 +2915,15 @@ impl IntoIterator for Any {
 }
 
 type AnyIterator = Box<dyn Iterator<Item = Any>>;
+
+impl IntoIterator for Array {
+    type Item = Any;
+    type IntoIter = AnyIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Box::new(self.0.into_iter())
+    }
+}
 
 // macro
 #[macro_export]
