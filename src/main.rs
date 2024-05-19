@@ -1,11 +1,14 @@
 use anyrust::*;
 
 fn main() {
-    let mut arr = array![1, 2, 3, 4, 5];
-    arr.push(4444);
-    arr.push("foo");
+    let mut map = Any::from(Map::new());
+    map.set("name", "John Doe");
+    map.set("age", 30);
+    map.set("is_adult", true);
 
-    for e in arr {
-        println!("{e}");
+    println!("{}", map.to_string());
+
+    for (k, v) in map.to_map() {
+        println!("{}: {}", k, v);
     }
 }

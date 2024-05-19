@@ -1,6 +1,6 @@
 [package]
 name = "anyrust"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 authors = ["myyrakle <sssang97@naver.com>"]
 description = "any rust"
