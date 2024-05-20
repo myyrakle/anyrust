@@ -11,4 +11,10 @@ fn main() {
     for (k, v) in map.to_map() {
         println!("{}: {}", k, v);
     }
+
+    let s = Any::from("Hello, World!");
+    println!("{:?}", s.to_string());
+    for c in s.to_string().chars() {
+        println!("{}", c);
+    }
 }
