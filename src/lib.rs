@@ -1070,6 +1070,13 @@ impl ToBoolean for f64 {
 impl ToPair for f64 {}
 // ---------------
 
+// 문자 트레잇 구현
+impl From<char> for Any {
+    fn from(value: char) -> Self {
+        Any::new(value.to_string())
+    }
+}
+
 // 문자열 트레잇 구현
 impl From<String> for Any {
     fn from(value: String) -> Self {
@@ -2907,6 +2914,15 @@ impl IntoIterator for Any {
         } else if self.type_id == *MAP {
             let map = self.data.to_map();
             Box::new(map.0.into_iter().map(|(k, v)| Any::from(Pair::new(k, v))))
+        } else if self.type_id == *STRING || self.type_id == *STR {
+            let iter = self
+                .data
+                .to_string()
+                .chars()
+                .map(|c| Any::from(c))
+                .collect::<Vec<_>>()
+                .into_iter();
+            Box::new(iter)
         } else {
             panic!("Cannot iterate over non-iterable type");
         }
