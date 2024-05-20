@@ -6,7 +6,7 @@ fn main() {
     map.set("age", 30);
     map.set("is_adult", true);
 
-    println!("{}", map.to_string());
+    println!("{:?}", map.to_string());
 
     for (k, v) in map.to_map() {
         println!("{}: {}", k, v);
