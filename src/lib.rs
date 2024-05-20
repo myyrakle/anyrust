@@ -1245,7 +1245,7 @@ impl From<Map> for Any {
 
 impl Display for Map {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.0)
+        write!(f, "{}", self.to_str())
     }
 }
 
@@ -1264,9 +1264,9 @@ impl ToStr for Map {
                 result.push_str(", ");
             }
 
-            result.push_str(&key.to_string());
+            result.push_str(&key.to_str());
             result.push_str(": ");
-            result.push_str(&value.to_string());
+            result.push_str(&value.to_str());
         }
 
         result.push_str("}");
