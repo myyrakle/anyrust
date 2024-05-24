@@ -2,7 +2,17 @@
 name = "anyrust_macro"
 version = "0.1.0"
 edition = "2021"
+authors = ["myyrakle <sssang97@naver.com>"]
+description = "any rust"
+keywords = ["any"]
+license = "MIT"
+include = ["src/lib.rs", "Cargo.toml"]
+readme = "README.md"
+repository = "https://github.com/myyrakle/anyrust"                          
+documentation = "https://github.com/myyrakle/anyrust/blob/master/README.md" 
+homepage = "https://github.com/myyrakle/anyrust/blob/master/README.md"      
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[lib]
+proc-macro=true
