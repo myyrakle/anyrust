@@ -326,9 +326,15 @@ mod test_map {
 }
 
 /// castable trait
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair {}
+pub trait AutoCast:
+    ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair + ToFunction
+{
+}
 
-impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair> AutoCast for T {}
+impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair + ToFunction> AutoCast
+    for T
+{
+}
 
 /// Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
@@ -500,6 +506,8 @@ impl ToPair for Array {
     }
 }
 
+impl ToFunction for Array {}
+
 // Pair 트레잇 구현
 impl From<(Any, Any)> for Pair {
     fn from(value: (Any, Any)) -> Self {
@@ -561,6 +569,8 @@ impl ToPair for Pair {
     }
 }
 
+impl ToFunction for Pair {}
+
 // i8 트레잇 구현
 impl From<i8> for Any {
     fn from(value: i8) -> Self {
@@ -605,6 +615,8 @@ impl ToBoolean for i8 {
 }
 
 impl ToPair for i8 {}
+
+impl ToFunction for i8 {}
 // ---------------
 
 // i16 트레잇 구현
@@ -651,6 +663,8 @@ impl ToBoolean for i16 {
 }
 
 impl ToPair for i16 {}
+
+impl ToFunction for i16 {}
 // ---------------
 
 // i32 트레잇 구현
@@ -697,6 +711,8 @@ impl ToBoolean for i32 {
 }
 
 impl ToPair for i32 {}
+
+impl ToFunction for i32 {}
 // ---------------
 
 // i64 트레잇 구현
@@ -743,6 +759,8 @@ impl ToBoolean for i64 {
 }
 
 impl ToPair for i64 {}
+
+impl ToFunction for i64 {}
 // ---------------
 
 // isize 트레잇 구현
@@ -789,6 +807,8 @@ impl ToBoolean for isize {
 }
 
 impl ToPair for isize {}
+
+impl ToFunction for isize {}
 // ---------------
 
 // u8 트레잇 구현
@@ -835,6 +855,8 @@ impl ToBoolean for u8 {
 }
 
 impl ToPair for u8 {}
+
+impl ToFunction for u8 {}
 // ---------------
 
 // u16 트레잇 구현
@@ -881,6 +903,8 @@ impl ToBoolean for u16 {
 }
 
 impl ToPair for u16 {}
+
+impl ToFunction for u16 {}
 // ---------------
 
 // u32 트레잇 구현
@@ -927,6 +951,8 @@ impl ToBoolean for u32 {
 }
 
 impl ToPair for u32 {}
+
+impl ToFunction for u32 {}
 // ---------------
 
 // u64 트레잇 구현
@@ -973,6 +999,8 @@ impl ToBoolean for u64 {
 }
 
 impl ToPair for u64 {}
+
+impl ToFunction for u64 {}
 // ---------------
 
 // usize 트레잇 구현
@@ -1019,6 +1047,8 @@ impl ToBoolean for usize {
 }
 
 impl ToPair for usize {}
+
+impl ToFunction for usize {}
 // ---------------
 
 // f32 트레잇 구현
@@ -1065,6 +1095,8 @@ impl ToBoolean for f32 {
 }
 
 impl ToPair for f32 {}
+
+impl ToFunction for f32 {}
 // ---------------
 
 // f64 트레잇 구현
@@ -1111,6 +1143,8 @@ impl ToBoolean for f64 {
 }
 
 impl ToPair for f64 {}
+
+impl ToFunction for f64 {}
 // ---------------
 
 // 문자 트레잇 구현
@@ -1164,6 +1198,8 @@ impl ToBoolean for String {
 }
 
 impl ToPair for String {}
+
+impl ToFunction for String {}
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
@@ -1210,6 +1246,8 @@ impl ToBoolean for &str {
 }
 
 impl ToPair for &str {}
+
+impl ToFunction for &str {}
 // ---------------
 
 // 불리언 트레잇 구현
@@ -1264,6 +1302,8 @@ impl ToBoolean for bool {
 }
 
 impl ToPair for bool {}
+
+impl ToFunction for bool {}
 // ---------------
 
 // Map 트레잇 구현
@@ -1358,6 +1398,8 @@ impl ToBoolean for Map {
 }
 
 impl ToPair for Map {}
+
+impl ToFunction for Map {}
 // ---------------
 
 // Null 트레잇 구현
@@ -1410,6 +1452,8 @@ impl Display for Null {
 }
 
 impl ToPair for Null {}
+
+impl ToFunction for Null {}
 // ---------------
 
 /// type for all
