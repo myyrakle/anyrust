@@ -5,7 +5,10 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    ops::{
+        Add, AddAssign, DerefMut, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub,
+        SubAssign,
+    },
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -38,6 +41,10 @@ pub struct Function(Box<dyn FnMut(Any) -> Any>);
 impl Function {
     pub fn new(f: impl FnMut(Any) -> Any + 'static) -> Self {
         Self(Box::new(f))
+    }
+
+    pub fn call(&mut self, args: Any) -> Any {
+        self.0(args)
     }
 }
 
