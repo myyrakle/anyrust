@@ -9,6 +9,8 @@ fn main() {
         sum
     });
 
+    let a = Any::from(f.clone());
+
     let args = array![1, 2, 3, 4, 5];
     let result = f.call(args.clone());
     print!("Result: {}", result);

@@ -35,6 +35,12 @@ pub(crate) const _null: Null = Null {};
 /// function type
 pub struct Function(Box<dyn FnMut(Any) -> Any>);
 
+impl Debug for Function {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "<function>")
+    }
+}
+
 impl Function {
     pub fn new(f: impl FnMut(Any) -> Any + 'static) -> Self {
         Self(Box::new(f))
