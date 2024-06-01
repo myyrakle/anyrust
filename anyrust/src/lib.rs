@@ -32,6 +32,9 @@ pub struct Null;
 #[allow(non_upper_case_globals)]
 pub(crate) const _null: Null = Null {};
 
+/// function type
+pub type Function = Box<dyn FnMut(Any) -> Any>;
+
 #[allow(non_upper_case_globals)]
 /// array type
 #[derive(Debug, Clone)]
