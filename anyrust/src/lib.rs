@@ -5,10 +5,7 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{
-        Add, AddAssign, DerefMut, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub,
-        SubAssign,
-    },
+    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -45,6 +42,29 @@ impl Function {
 
     pub fn call(&mut self, args: Any) -> Any {
         self.0(args)
+    }
+}
+
+#[cfg(test)]
+mod test_function {
+    use super::*;
+    use crate as anyrust;
+
+    #[test]
+    fn test_function() {
+        let mut f = Function::new(|args| {
+            let mut sum = Any::from(0);
+            for arg in args.to_array().0 {
+                sum += arg;
+            }
+            sum
+        });
+
+        let result = f.call(array![1, 2, 3, 4, 5]);
+        assert_eq!(result, Any::from(15_i64));
+
+        let result = f.call(array![1, 2, 3, 4, 5, 7]);
+        assert_eq!(result, Any::from(22_i64));
     }
 }
 
