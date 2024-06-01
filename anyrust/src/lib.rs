@@ -383,6 +383,13 @@ pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
 }
 
+// Trait for casting: Defines how to convert when cast to a function.
+pub trait ToFunction {
+    fn to_function(&self) -> Function {
+        Function::new(|_| Any::from(_null))
+    }
+}
+
 impl Display for Any {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.data)
