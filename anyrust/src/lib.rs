@@ -33,7 +33,13 @@ pub struct Null;
 pub(crate) const _null: Null = Null {};
 
 /// function type
-pub type Function = Box<dyn FnMut(Any) -> Any>;
+pub struct Function(Box<dyn FnMut(Any) -> Any>);
+
+impl Function {
+    pub fn new(f: impl FnMut(Any) -> Any + 'static) -> Self {
+        Self(Box::new(f))
+    }
+}
 
 #[allow(non_upper_case_globals)]
 /// array type
