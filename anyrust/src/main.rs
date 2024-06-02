@@ -1,20 +1,24 @@
 use anyrust::*;
 
 fn main() {
-    let mut map = Any::from(Map::new());
-    map.set("name", "John Doe");
-    map.set("age", 30);
-    map.set("is_adult", true);
+    let f: Function = Function::new(move |args| {
+        let mut sum = Any::from(0);
+        for arg in args {
+            sum += arg;
+        }
+        sum
+    });
 
-    println!("{:?}", map.to_string());
+    let a = Any::from(f.clone());
+    let b = a.clone();
 
-    for (k, v) in map.to_map() {
-        println!("{}: {}", k, v);
-    }
+    let args = array![1, 2, 3, 4, 5];
+    let result = a.call(args.clone());
+    print!("Result: {}", result);
 
-    let s = Any::from("Hello, World!");
-    println!("{:?}", s.to_string());
-    for c in s.to_string().chars() {
-        println!("{}", c);
-    }
+    let result = a.call(args);
+    print!("Result: {}", result);
+
+    let result = b.call(array![1, 2, 3, 4, 4]);
+    print!("Result: {}", result);
 }

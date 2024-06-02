@@ -2,10 +2,12 @@
 
 use std::{
     any::TypeId,
+    borrow::BorrowMut,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    rc::Rc,
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -31,6 +33,61 @@ pub struct Null;
 /// null value
 #[allow(non_upper_case_globals)]
 pub(crate) const _null: Null = Null {};
+
+/// function type
+pub struct Function(Rc<dyn Fn(Any) -> Any>);
+
+impl Debug for Function {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "<function>")
+    }
+}
+
+unsafe impl Send for Function {}
+
+unsafe impl Sync for Function {}
+
+impl Clone for Function {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
+impl Function {
+    pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync) -> Self {
+        Self(Rc::new(f))
+    }
+
+    pub fn call(&mut self, args: Any) -> Any {
+        let mut rc = self.0.clone();
+        let borrowed = rc.borrow_mut();
+        let return_value = borrowed(args);
+        return_value
+    }
+}
+
+#[cfg(test)]
+mod test_function {
+    use super::*;
+    use crate as anyrust;
+
+    #[test]
+    fn test_function() {
+        let mut f = Function::new(|args| {
+            let mut sum = Any::from(0);
+            for arg in args.to_array().0 {
+                sum += arg;
+            }
+            sum
+        });
+
+        let result = f.call(array![1, 2, 3, 4, 5]);
+        assert_eq!(result, Any::from(15_i64));
+
+        let result = f.call(array![1, 2, 3, 4, 5, 7]);
+        assert_eq!(result, Any::from(22_i64));
+    }
+}
 
 #[allow(non_upper_case_globals)]
 /// array type
@@ -290,9 +347,15 @@ mod test_map {
 }
 
 /// castable trait
-pub trait AutoCast: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair {}
+pub trait AutoCast:
+    ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair + ToFunction
+{
+}
 
-impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair> AutoCast for T {}
+impl<T: ToInteger + ToFloat + ToArray + ToMap + ToBoolean + ToStr + ToPair + ToFunction> AutoCast
+    for T
+{
+}
 
 /// Trait for casting: Defines how to convert when cast to an integer.
 pub trait ToInteger {
@@ -345,6 +408,13 @@ pub trait ToPair {
 /// Trait for casting: Defines how to convert when cast to a boolean.
 pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
+}
+
+// Trait for casting: Defines how to convert when cast to a function.
+pub trait ToFunction {
+    fn to_function(&self) -> Function {
+        Function::new(|_| Any::from(_null))
+    }
 }
 
 impl Display for Any {
@@ -457,6 +527,8 @@ impl ToPair for Array {
     }
 }
 
+impl ToFunction for Array {}
+
 // Pair 트레잇 구현
 impl From<(Any, Any)> for Pair {
     fn from(value: (Any, Any)) -> Self {
@@ -518,6 +590,8 @@ impl ToPair for Pair {
     }
 }
 
+impl ToFunction for Pair {}
+
 // i8 트레잇 구현
 impl From<i8> for Any {
     fn from(value: i8) -> Self {
@@ -562,6 +636,8 @@ impl ToBoolean for i8 {
 }
 
 impl ToPair for i8 {}
+
+impl ToFunction for i8 {}
 // ---------------
 
 // i16 트레잇 구현
@@ -608,6 +684,8 @@ impl ToBoolean for i16 {
 }
 
 impl ToPair for i16 {}
+
+impl ToFunction for i16 {}
 // ---------------
 
 // i32 트레잇 구현
@@ -654,6 +732,8 @@ impl ToBoolean for i32 {
 }
 
 impl ToPair for i32 {}
+
+impl ToFunction for i32 {}
 // ---------------
 
 // i64 트레잇 구현
@@ -700,6 +780,8 @@ impl ToBoolean for i64 {
 }
 
 impl ToPair for i64 {}
+
+impl ToFunction for i64 {}
 // ---------------
 
 // isize 트레잇 구현
@@ -746,6 +828,8 @@ impl ToBoolean for isize {
 }
 
 impl ToPair for isize {}
+
+impl ToFunction for isize {}
 // ---------------
 
 // u8 트레잇 구현
@@ -792,6 +876,8 @@ impl ToBoolean for u8 {
 }
 
 impl ToPair for u8 {}
+
+impl ToFunction for u8 {}
 // ---------------
 
 // u16 트레잇 구현
@@ -838,6 +924,8 @@ impl ToBoolean for u16 {
 }
 
 impl ToPair for u16 {}
+
+impl ToFunction for u16 {}
 // ---------------
 
 // u32 트레잇 구현
@@ -884,6 +972,8 @@ impl ToBoolean for u32 {
 }
 
 impl ToPair for u32 {}
+
+impl ToFunction for u32 {}
 // ---------------
 
 // u64 트레잇 구현
@@ -930,6 +1020,8 @@ impl ToBoolean for u64 {
 }
 
 impl ToPair for u64 {}
+
+impl ToFunction for u64 {}
 // ---------------
 
 // usize 트레잇 구현
@@ -976,6 +1068,8 @@ impl ToBoolean for usize {
 }
 
 impl ToPair for usize {}
+
+impl ToFunction for usize {}
 // ---------------
 
 // f32 트레잇 구현
@@ -1022,6 +1116,8 @@ impl ToBoolean for f32 {
 }
 
 impl ToPair for f32 {}
+
+impl ToFunction for f32 {}
 // ---------------
 
 // f64 트레잇 구현
@@ -1068,6 +1164,8 @@ impl ToBoolean for f64 {
 }
 
 impl ToPair for f64 {}
+
+impl ToFunction for f64 {}
 // ---------------
 
 // 문자 트레잇 구현
@@ -1121,6 +1219,8 @@ impl ToBoolean for String {
 }
 
 impl ToPair for String {}
+
+impl ToFunction for String {}
 // ---------------
 
 // 문자열 슬라이스 트레잇 구현
@@ -1167,6 +1267,8 @@ impl ToBoolean for &str {
 }
 
 impl ToPair for &str {}
+
+impl ToFunction for &str {}
 // ---------------
 
 // 불리언 트레잇 구현
@@ -1221,6 +1323,8 @@ impl ToBoolean for bool {
 }
 
 impl ToPair for bool {}
+
+impl ToFunction for bool {}
 // ---------------
 
 // Map 트레잇 구현
@@ -1315,6 +1419,8 @@ impl ToBoolean for Map {
 }
 
 impl ToPair for Map {}
+
+impl ToFunction for Map {}
 // ---------------
 
 // Null 트레잇 구현
@@ -1367,7 +1473,67 @@ impl Display for Null {
 }
 
 impl ToPair for Null {}
+
+impl ToFunction for Null {}
 // ---------------
+
+// Function 트레잇 구현
+
+impl From<Function> for Any {
+    fn from(value: Function) -> Self {
+        Any::new(value)
+    }
+}
+
+impl ToInteger for Function {
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+impl ToStr for Function {
+    fn to_str(&self) -> String {
+        String::from("function")
+    }
+}
+
+impl ToFloat for Function {
+    fn to_float(&self) -> f64 {
+        0 as f64
+    }
+}
+
+impl ToArray for Function {
+    fn to_array(&self) -> Array {
+        vec![].into()
+    }
+}
+
+impl ToMap for Function {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for Function {
+    fn to_boolean(&self) -> bool {
+        false
+    }
+}
+
+impl Display for Function {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "function")
+    }
+}
+
+impl ToPair for Function {}
+
+impl ToFunction for Function {
+    fn to_function(&self) -> Function {
+        self.clone()
+    }
+}
 
 /// type for all
 #[derive(Debug)]
@@ -1462,6 +1628,10 @@ impl Any {
 
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
+    }
+
+    pub fn is_function(&self) -> bool {
+        self.type_id == *FUNCTION
     }
 }
 
@@ -1889,6 +2059,17 @@ impl Any {
     }
 }
 
+// function operations
+impl Any {
+    pub fn call(&self, args: Any) -> Any {
+        if self.is_function() {
+            self.data.to_function().call(args)
+        } else {
+            Any::from(_null)
+        }
+    }
+}
+
 lazy_static::lazy_static! {
     pub(crate) static ref I8: TypeId = TypeId::of::<i8>();
     pub(crate) static ref I16: TypeId = TypeId::of::<i16>();
@@ -1908,6 +2089,7 @@ lazy_static::lazy_static! {
     pub(crate) static ref ARRAY: TypeId = TypeId::of::<Array>();
     pub(crate) static ref MAP: TypeId = TypeId::of::<Map>();
     pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
+    pub(crate) static ref FUNCTION: TypeId = TypeId::of::<Function>();
 
     /// null value
     pub static ref null: Any = Any::new(_null);
