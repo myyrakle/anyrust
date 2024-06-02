@@ -13,9 +13,9 @@ fn main() {
     let b = a.clone();
 
     let args = array![1, 2, 3, 4, 5];
-    let result = f.clone().call(args.clone());
+    let result = a.call(args.clone());
     print!("Result: {}", result);
 
-    let result = f.clone().call(args);
+    let result = a.call(args);
     print!("Result: {}", result);
 }

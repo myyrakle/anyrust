@@ -1629,6 +1629,10 @@ impl Any {
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
     }
+
+    pub fn is_function(&self) -> bool {
+        self.type_id == *FUNCTION
+    }
 }
 
 // type cast functions
