@@ -45,6 +45,8 @@ impl Debug for Function {
 
 unsafe impl Send for Function {}
 
+unsafe impl Sync for Function {}
+
 impl Clone for Function {
     fn clone(&self) -> Self {
         Self(self.0.clone())
@@ -52,7 +54,7 @@ impl Clone for Function {
 }
 
 impl Function {
-    pub fn new(f: impl Fn(Any) -> Any + 'static) -> Self {
+    pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync) -> Self {
         Self(Rc::new(f))
     }
 
@@ -1474,6 +1476,64 @@ impl ToPair for Null {}
 
 impl ToFunction for Null {}
 // ---------------
+
+// Function 트레잇 구현
+
+impl From<Function> for Any {
+    fn from(value: Function) -> Self {
+        Any::new(value)
+    }
+}
+
+impl ToInteger for Function {
+    fn to_integer(&self) -> i64 {
+        0 as i64
+    }
+}
+
+impl ToStr for Function {
+    fn to_str(&self) -> String {
+        String::from("function")
+    }
+}
+
+impl ToFloat for Function {
+    fn to_float(&self) -> f64 {
+        0 as f64
+    }
+}
+
+impl ToArray for Function {
+    fn to_array(&self) -> Array {
+        vec![].into()
+    }
+}
+
+impl ToMap for Function {
+    fn to_map(&self) -> Map {
+        Map(HashMap::new())
+    }
+}
+
+impl ToBoolean for Function {
+    fn to_boolean(&self) -> bool {
+        false
+    }
+}
+
+impl Display for Function {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "function")
+    }
+}
+
+impl ToPair for Function {}
+
+impl ToFunction for Function {
+    fn to_function(&self) -> Function {
+        self.clone()
+    }
+}
 
 /// type for all
 #[derive(Debug)]
