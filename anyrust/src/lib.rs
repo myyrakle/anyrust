@@ -2,10 +2,12 @@
 
 use std::{
     any::TypeId,
+    borrow::BorrowMut,
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    rc::Rc,
 };
 
 use dyn_clone::{clone_trait_object, DynClone};
@@ -33,7 +35,7 @@ pub struct Null;
 pub(crate) const _null: Null = Null {};
 
 /// function type
-pub struct Function(Box<dyn FnMut(Any) -> Any>);
+pub struct Function(Rc<dyn Fn(Any) -> Any>);
 
 impl Debug for Function {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -41,13 +43,24 @@ impl Debug for Function {
     }
 }
 
+unsafe impl Send for Function {}
+
+impl Clone for Function {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
 impl Function {
-    pub fn new(f: impl FnMut(Any) -> Any + 'static) -> Self {
-        Self(Box::new(f))
+    pub fn new(f: impl Fn(Any) -> Any + 'static) -> Self {
+        Self(Rc::new(f))
     }
 
     pub fn call(&mut self, args: Any) -> Any {
-        self.0(args)
+        let mut rc = self.0.clone();
+        let borrowed = rc.borrow_mut();
+        let return_value = borrowed(args);
+        return_value
     }
 }
 
