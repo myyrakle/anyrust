@@ -2059,6 +2059,17 @@ impl Any {
     }
 }
 
+// function operations
+impl Any {
+    pub fn call(&self, args: Any) -> Any {
+        if self.is_function() {
+            self.data.to_function().call(args)
+        } else {
+            Any::from(_null)
+        }
+    }
+}
+
 lazy_static::lazy_static! {
     pub(crate) static ref I8: TypeId = TypeId::of::<i8>();
     pub(crate) static ref I16: TypeId = TypeId::of::<i16>();
