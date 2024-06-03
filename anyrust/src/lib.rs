@@ -61,6 +61,7 @@ impl Clone for Function {
 
 impl Function {
     pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync, args_count: usize) -> Self {
+        println!("!! {args_count}");
         Self {
             f: Rc::new(f),
             args_count,
@@ -3166,11 +3167,15 @@ macro_rules! array {
 macro_rules! function {
     ($($arg:ident),* => $body:block) => {
         {
-            let n = 0;
-            // $(
-            //     let $arg = &args[n];
-            //     n += 1;
-            // )*
+            // for args_count
+            let mut n = 0;
+
+            $(
+                #[allow(unused_variables)]
+                let $arg = 0;
+                n += 1;
+            )*
+
             anyrust::Any::from(anyrust::Function::new(move |args| {
                 $(
                     let $arg = args[n].clone();
