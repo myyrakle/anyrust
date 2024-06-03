@@ -5,7 +5,7 @@ fn main() {
         lhs + rhs
     });
 
-    let result = add.call(array![1, 2]);
+    let result = add.call(params![1, 2]);
     println!("Result: {}", result);
 
     let four: Any = function!( => {
@@ -13,6 +13,6 @@ fn main() {
         sum
     });
 
-    let result = four.call(array![]);
+    let result = four.call(params![]);
     println!("Result: {}", result);
 }

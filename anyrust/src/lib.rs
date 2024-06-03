@@ -3162,6 +3162,8 @@ macro_rules! array {
     };
 }
 
+pub use array as params;
+
 #[macro_export]
 macro_rules! function {
     ($($arg:ident),* => $body:block) => {
