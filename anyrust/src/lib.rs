@@ -67,7 +67,7 @@ impl Function {
         }
     }
 
-    pub fn call(&mut self, args: Any) -> Any {
+    pub fn call(&self, args: Any) -> Any {
         let mut rc = self.f.clone();
         let borrowed = rc.borrow_mut();
         let return_value = borrowed(args);
@@ -82,7 +82,7 @@ mod test_function {
 
     #[test]
     fn test_function() {
-        let mut f = Function::new(
+        let f = Function::new(
             |args| {
                 let mut sum = Any::from(0);
                 for arg in args.to_array().0 {
@@ -3158,6 +3158,25 @@ macro_rules! array {
             )*
 
             Any::from(anyrust::Array::from(temp_vec))
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! function {
+    ($($arg:ident),* => $body:block) => {
+        {
+            let n = 0;
+            // $(
+            //     let $arg = &args[n];
+            //     n += 1;
+            // )*
+            anyrust::Any::from(anyrust::Function::new(move |args| {
+                $(
+                    let $arg = args[n].clone();
+                )*
+                $body
+            }, n))
         }
     };
 }
