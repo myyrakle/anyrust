@@ -1,13 +1,16 @@
 use anyrust::*;
 
 fn main() {
-    let f: Function = Function::new(move |args| {
-        let mut sum = Any::from(0);
-        for arg in args {
-            sum += arg;
-        }
-        sum
-    });
+    let f: Function = Function::new(
+        move |args| {
+            let mut sum = Any::from(0);
+            for arg in args {
+                sum += arg;
+            }
+            sum
+        },
+        1,
+    );
 
     let a = Any::from(f.clone());
     let b = a.clone();
