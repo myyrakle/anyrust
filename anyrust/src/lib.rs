@@ -35,7 +35,10 @@ pub struct Null;
 pub(crate) const _null: Null = Null {};
 
 /// function type
-pub struct Function(Rc<dyn Fn(Any) -> Any>);
+pub struct Function {
+    f: Rc<dyn Fn(Any) -> Any>,
+    args_count: usize,
+}
 
 impl Debug for Function {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -49,17 +52,23 @@ unsafe impl Sync for Function {}
 
 impl Clone for Function {
     fn clone(&self) -> Self {
-        Self(self.0.clone())
+        Self {
+            f: self.f.clone(),
+            args_count: self.args_count,
+        }
     }
 }
 
 impl Function {
-    pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync) -> Self {
-        Self(Rc::new(f))
+    pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync, args_count: usize) -> Self {
+        Self {
+            f: Rc::new(f),
+            args_count,
+        }
     }
 
-    pub fn call(&mut self, args: Any) -> Any {
-        let mut rc = self.0.clone();
+    pub fn call(&self, args: Any) -> Any {
+        let mut rc = self.f.clone();
         let borrowed = rc.borrow_mut();
         let return_value = borrowed(args);
         return_value
@@ -73,13 +82,16 @@ mod test_function {
 
     #[test]
     fn test_function() {
-        let mut f = Function::new(|args| {
-            let mut sum = Any::from(0);
-            for arg in args.to_array().0 {
-                sum += arg;
-            }
-            sum
-        });
+        let f = Function::new(
+            |args| {
+                let mut sum = Any::from(0);
+                for arg in args.to_array().0 {
+                    sum += arg;
+                }
+                sum
+            },
+            1,
+        );
 
         let result = f.call(array![1, 2, 3, 4, 5]);
         assert_eq!(result, Any::from(15_i64));
@@ -413,7 +425,7 @@ pub trait ToBoolean {
 // Trait for casting: Defines how to convert when cast to a function.
 pub trait ToFunction {
     fn to_function(&self) -> Function {
-        Function::new(|_| Any::from(_null))
+        Function::new(|_| Any::from(_null), 0)
     }
 }
 
@@ -3146,6 +3158,31 @@ macro_rules! array {
             )*
 
             Any::from(anyrust::Array::from(temp_vec))
+        }
+    };
+}
+
+pub use array as params;
+
+#[macro_export]
+macro_rules! function {
+    ($($arg:ident),* => $body:block) => {
+        {
+            // for args_count
+            let mut n = 0;
+
+            $(
+                #[allow(unused_variables)]
+                let $arg = 0;
+                n += 1;
+            )*
+
+            anyrust::Any::from(anyrust::Function::new(move |args| {
+                $(
+                    let $arg = args[n].clone();
+                )*
+                $body
+            }, n))
         }
     };
 }

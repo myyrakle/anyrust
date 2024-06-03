@@ -1,24 +1,18 @@
 use anyrust::*;
 
 fn main() {
-    let f: Function = Function::new(move |args| {
-        let mut sum = Any::from(0);
-        for arg in args {
-            sum += arg;
-        }
+    let add = function!(lhs, rhs => {
+        lhs + rhs
+    });
+
+    let result = add.call(params![1, 2]);
+    println!("Result: {}", result);
+
+    let four: Any = function!( => {
+        let sum = Any::from(4444);
         sum
     });
 
-    let a = Any::from(f.clone());
-    let b = a.clone();
-
-    let args = array![1, 2, 3, 4, 5];
-    let result = a.call(args.clone());
-    print!("Result: {}", result);
-
-    let result = a.call(args);
-    print!("Result: {}", result);
-
-    let result = b.call(array![1, 2, 3, 4, 4]);
-    print!("Result: {}", result);
+    let result = four.call(params![]);
+    println!("Result: {}", result);
 }

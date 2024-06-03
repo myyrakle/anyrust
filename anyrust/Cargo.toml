@@ -1,13 +1,13 @@
 [package]
 name = "anyrust"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2021"
 authors = ["myyrakle <sssang97@naver.com>"]
 description = "any rust"
 keywords = ["any"]
 license = "MIT"
 include = ["src/lib.rs", "Cargo.toml"]
-readme = "README.md"
+readme = "../README.md"
 repository = "https://github.com/myyrakle/anyrust"                          
 documentation = "https://github.com/myyrakle/anyrust/blob/master/README.md" 
 homepage = "https://github.com/myyrakle/anyrust/blob/master/README.md"      
