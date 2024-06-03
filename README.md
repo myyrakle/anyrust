@@ -54,3 +54,23 @@ KV Map is supported through the `anyrust::Map` type. This is compatible with `Ha
         println!("{}: {}", k, v);
     }
 ```
+
+## Function 
+
+Function types are provided through the `Function` type. You can easily create it with the `function!` macro.
+```rust
+    let add = function!(lhs, rhs => {
+        lhs + rhs
+    });
+
+    let result = add.call(array![1, 2]);
+    println!("Result: {}", result);
+
+    let four: Any = function!( => {
+        let sum = Any::from(4444);
+        sum
+    });
+
+    let result = four.call(array![]);
+    println!("Result: {}", result);
+```

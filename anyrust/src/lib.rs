@@ -61,7 +61,6 @@ impl Clone for Function {
 
 impl Function {
     pub fn new(f: impl Fn(Any) -> Any + 'static + Send + Sync, args_count: usize) -> Self {
-        println!("!! {args_count}");
         Self {
             f: Rc::new(f),
             args_count,
