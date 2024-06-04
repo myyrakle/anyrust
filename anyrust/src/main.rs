@@ -2,17 +2,17 @@ use anyrust::*;
 
 fn main() {
     let add = function!(lhs, rhs => {
+        println!("lhs: {}, rhs: {}", lhs, rhs);
         lhs + rhs
     });
 
-    let result = add.call(params![1, 2]);
-    println!("Result: {}", result);
-
-    let four: Any = function!( => {
-        let sum = Any::from(4444);
-        sum
+    let negative = function!(num => {
+        num * Any::from(-1)
     });
 
-    let result = four.call(params![]);
+    let composite = add >> negative;
+
+    let result = composite.call(params![1, 2]);
+
     println!("Result: {}", result);
 }

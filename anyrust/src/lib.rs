@@ -6,7 +6,9 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    ops::{
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Shr, Sub, SubAssign,
+    },
     rc::Rc,
 };
 
@@ -73,6 +75,22 @@ impl Function {
         let return_value = borrowed(args);
         return_value
     }
+
+    pub fn composite(&self, other: Self) -> Self {
+        use crate as anyrust;
+
+        let f = self.f.clone();
+        let other_f = other.f.clone();
+        let args_count = self.args_count;
+
+        Self {
+            f: Rc::new(move |args| {
+                let result = f(args.clone());
+                other_f(params![result])
+            }),
+            args_count,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -98,6 +116,42 @@ mod test_function {
 
         let result = f.call(array![1, 2, 3, 4, 5, 7]);
         assert_eq!(result, Any::from(22_i64));
+    }
+
+    #[test]
+    fn test_composite_function() {
+        let add = Function::new(
+            |args| {
+                let lhs = args[0].clone();
+                let rhs = args[1].clone();
+                lhs + rhs
+            },
+            2,
+        );
+
+        let negative = Function::new(
+            |args| {
+                let value = args[0].clone();
+                value * Any::from(-1)
+            },
+            1,
+        );
+
+        let add_result = add.call(array![1, 2]);
+        assert_eq!(add_result, Any::from(3_i64), "add_result: {:?}", add_result);
+
+        let negative_result = negative.call(array![add_result]);
+        assert_eq!(
+            negative_result,
+            Any::from(-3_i64),
+            "negative_result: {:?}",
+            negative_result
+        );
+
+        let composited = add.composite(negative);
+
+        let result = composited.call(array![1, 2]);
+        assert_eq!(result, Any::from(-3_i64), "result: {:?}", result);
     }
 }
 
@@ -1676,6 +1730,10 @@ impl Any {
     pub fn to_pair(&self) -> Pair {
         self.data.to_pair()
     }
+
+    pub fn to_function(&self) -> Function {
+        self.data.to_function()
+    }
 }
 
 #[cfg(test)]
@@ -3146,6 +3204,24 @@ impl IntoIterator for Map {
     }
 }
 
+impl Shr for Any {
+    type Output = Any;
+
+    fn shr(self, other: Self) -> Self {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(_null)
+        } else if self.type_id == *FUNCTION && other.type_id == *FUNCTION {
+            let a = self.to_function();
+            let b = other.to_function();
+            Any::from(a.composite(b))
+        } else {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a >> b)
+        }
+    }
+}
+
 // macro
 #[macro_export]
 
@@ -3178,8 +3254,10 @@ macro_rules! function {
             )*
 
             anyrust::Any::from(anyrust::Function::new(move |args| {
+                let mut arg_index = 0;
                 $(
-                    let $arg = args[n].clone();
+                    let $arg = args[arg_index].clone();
+                    arg_index += 1;
                 )*
                 $body
             }, n))
