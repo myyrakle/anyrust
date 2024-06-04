@@ -1730,6 +1730,10 @@ impl Any {
     pub fn to_pair(&self) -> Pair {
         self.data.to_pair()
     }
+
+    pub fn to_function(&self) -> Function {
+        self.data.to_function()
+    }
 }
 
 #[cfg(test)]
