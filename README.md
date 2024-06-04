@@ -1,6 +1,6 @@
 # anyrust
 
-![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.3.0-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
+![](https://img.shields.io/badge/language-Rust-red) ![](https://img.shields.io/badge/version-0.3.1-brightgreen) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/myyrakle/anyrust/blob/master/LICENSE)
 
 A library that provides a type system as flexible and powerful as Javascript.
 
@@ -73,4 +73,22 @@ Function types are provided through the `Function` type. You can easily create i
 
     let result = four.call(array![]);
     println!("Result: {}", result);
+```
+
+You can also use function composition through the >> operator.
+```rust
+    let add = function!(lhs, rhs => {
+        println!("lhs: {}, rhs: {}", lhs, rhs);
+        lhs + rhs
+    });
+
+    let negative = function!(num => {
+        num * Any::from(-1)
+    });
+
+    let composite = add >> negative;
+
+    let result = composite.call(params![1, 2]);
+
+    println!("Result: {}", result); // -3
 ```

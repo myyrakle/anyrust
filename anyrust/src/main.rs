@@ -6,9 +6,6 @@ fn main() {
         lhs + rhs
     });
 
-    let result = add.call(array![1, 2]);
-    println!("Result: {}", result);
-
     let negative = function!(num => {
         num * Any::from(-1)
     });
