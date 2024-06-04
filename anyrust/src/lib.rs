@@ -8,7 +8,9 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display},
     hash::Hash,
-    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Sub, SubAssign},
+    ops::{
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Shr, Sub, SubAssign,
+    },
     rc::Rc,
 };
 
@@ -3195,6 +3197,24 @@ impl IntoIterator for Map {
     fn into_iter(self) -> Self::IntoIter {
         let foo = Box::new(self.0.into_iter());
         foo
+    }
+}
+
+impl Shr for Any {
+    type Output = Any;
+
+    fn shr(self, other: Self) -> Self {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(_null)
+        } else if self.type_id == *FUNCTION && other.type_id == *FUNCTION {
+            let a = self.to_function();
+            let b = other.to_function();
+            Any::from(a.composite(b))
+        } else {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a >> b)
+        }
     }
 }
 
