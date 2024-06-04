@@ -1,5 +1,7 @@
 #![allow(non_upper_case_globals)]
 
+use crate as anyrust;
+
 use std::{
     any::TypeId,
     borrow::BorrowMut,
@@ -82,7 +84,7 @@ impl Function {
         Self {
             f: Rc::new(move |args| {
                 let result = f(args.clone());
-                other_f(result)
+                other_f(params![result])
             }),
             args_count,
         }
@@ -112,6 +114,42 @@ mod test_function {
 
         let result = f.call(array![1, 2, 3, 4, 5, 7]);
         assert_eq!(result, Any::from(22_i64));
+    }
+
+    #[test]
+    fn test_composite_function() {
+        let add = Function::new(
+            |args| {
+                let lhs = args[0].clone();
+                let rhs = args[1].clone();
+                lhs + rhs
+            },
+            2,
+        );
+
+        let negative = Function::new(
+            |args| {
+                let value = args[0].clone();
+                value * Any::from(-1)
+            },
+            1,
+        );
+
+        let add_result = add.call(array![1, 2]);
+        assert_eq!(add_result, Any::from(3_i64), "add_result: {:?}", add_result);
+
+        let negative_result = negative.call(array![add_result]);
+        assert_eq!(
+            negative_result,
+            Any::from(-3_i64),
+            "negative_result: {:?}",
+            negative_result
+        );
+
+        let composited = add.composite(negative);
+
+        let result = composited.call(array![1, 2]);
+        assert_eq!(result, Any::from(-3_i64), "result: {:?}", result);
     }
 }
 
