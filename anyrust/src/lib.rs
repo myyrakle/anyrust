@@ -73,6 +73,20 @@ impl Function {
         let return_value = borrowed(args);
         return_value
     }
+
+    pub fn composite(&self, other: Self) -> Self {
+        let f = self.f.clone();
+        let other_f = other.f.clone();
+        let args_count = self.args_count;
+
+        Self {
+            f: Rc::new(move |args| {
+                let result = f(args.clone());
+                other_f(result)
+            }),
+            args_count,
+        }
+    }
 }
 
 #[cfg(test)]
