@@ -1,7 +1,5 @@
 #![allow(non_upper_case_globals)]
 
-use crate as anyrust;
-
 use std::{
     any::TypeId,
     borrow::BorrowMut,
@@ -79,6 +77,8 @@ impl Function {
     }
 
     pub fn composite(&self, other: Self) -> Self {
+        use crate as anyrust;
+
         let f = self.f.clone();
         let other_f = other.f.clone();
         let args_count = self.args_count;
@@ -3254,8 +3254,10 @@ macro_rules! function {
             )*
 
             anyrust::Any::from(anyrust::Function::new(move |args| {
+                let mut arg_index = 0;
                 $(
-                    let $arg = args[n].clone();
+                    let $arg = args[arg_index].clone();
+                    arg_index += 1;
                 )*
                 $body
             }, n))
