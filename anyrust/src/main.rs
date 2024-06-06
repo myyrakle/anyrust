@@ -1,6 +1,9 @@
 use anyrust::*;
 
 fn main() {
+    let p = pair!(1, 2);
+    println!("Pair: {:?}", p);
+
     let add = function!(lhs, rhs => {
         println!("lhs: {}, rhs: {}", lhs, rhs);
         lhs + rhs
