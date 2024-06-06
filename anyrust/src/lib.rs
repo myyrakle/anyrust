@@ -3241,7 +3241,7 @@ impl Shr for Any {
     }
 }
 
-// macro
+/// Create a new array
 #[macro_export]
 macro_rules! array {
     ($($x:expr),*) => {
@@ -3256,8 +3256,10 @@ macro_rules! array {
     };
 }
 
+/// Create a new params array (same as array! macro)
 pub use array as params;
 
+/// Create a new function
 #[macro_export]
 macro_rules! function {
     ($($arg:ident),* => $body:block) => {
@@ -3283,6 +3285,7 @@ macro_rules! function {
     };
 }
 
+/// Create a new pair
 #[macro_export]
 macro_rules! pair {
     ($key:expr, $value:expr) => {
