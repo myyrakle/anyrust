@@ -1,4 +1,6 @@
 #![allow(non_upper_case_globals)]
+#![allow(clippy::vec_init_then_push)]
+#![allow(clippy::if_same_then_else)]
 
 use std::{
     any::TypeId,
@@ -77,8 +79,8 @@ impl Function {
     pub fn call(&self, args: Any) -> Any {
         let mut rc = self.f.clone();
         let borrowed = rc.borrow_mut();
-        let return_value = borrowed(args);
-        return_value
+        
+        borrowed(args)
     }
 
     pub fn composite(&self, other: Self) -> Self {
@@ -164,6 +166,12 @@ mod test_function {
 /// array type
 #[derive(Debug, Clone)]
 pub struct Array(Vec<Any>);
+
+impl Default for Array {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Array {
     pub fn new() -> Self {
@@ -321,6 +329,12 @@ impl Pair {
 /// key-value map type
 #[derive(Debug, Clone)]
 pub struct Map(std::collections::HashMap<Any, Any>);
+
+impl Default for Map {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Map {
     pub fn new() -> Self {
@@ -533,7 +547,7 @@ impl Display for Array {
             }
             result.push_str(&item.to_string());
         }
-        result.push_str("]");
+        result.push(']');
         write!(f, "{}", result)
     }
 }
@@ -585,14 +599,14 @@ impl ToStr for Array {
             }
             result.push_str(&item.to_string());
         }
-        result.push_str("]");
+        result.push(']');
         result
     }
 }
 
 impl ToPair for Array {
     fn to_pair(&self) -> Pair {
-        let lhs = self.0.get(0).unwrap_or(&null).clone();
+        let lhs = self.0.first().unwrap_or(&null).clone();
         let rhs = self.0.get(1).unwrap_or(&null).clone();
         Pair::new(lhs, rhs)
     }
@@ -1433,7 +1447,7 @@ impl Display for Map {
 
 impl ToInteger for Map {
     fn to_integer(&self) -> i64 {
-        0 as i64
+        0_i64
     }
 }
 
@@ -1451,7 +1465,7 @@ impl ToStr for Map {
             result.push_str(&value.to_str());
         }
 
-        result.push_str("}");
+        result.push('}');
 
         result
     }
@@ -1503,7 +1517,7 @@ impl From<Null> for Any {
 
 impl ToInteger for Null {
     fn to_integer(&self) -> i64 {
-        0 as i64
+        0_i64
     }
 }
 
@@ -1558,7 +1572,7 @@ impl From<Function> for Any {
 
 impl ToInteger for Function {
     fn to_integer(&self) -> i64 {
-        0 as i64
+        0_i64
     }
 }
 
@@ -3118,7 +3132,7 @@ where
         } else if self.type_id == *MAP {
             let map = self.data.to_map_mut();
 
-            if let None = map.0.get(&key) {
+            if map.0.get(&key).is_none() {
                 map.0.insert(key.clone(), null.clone());
             }
 
@@ -3176,7 +3190,7 @@ impl IntoIterator for Any {
                 .data
                 .to_string()
                 .chars()
-                .map(|c| Any::from(c))
+                .map(Any::from)
                 .collect::<Vec<_>>()
                 .into_iter();
             Box::new(iter)
@@ -3204,8 +3218,8 @@ impl IntoIterator for Map {
     type IntoIter = AnyPairIterator;
 
     fn into_iter(self) -> Self::IntoIter {
-        let foo = Box::new(self.0.into_iter());
-        foo
+        
+        (Box::new(self.0.into_iter())) as _
     }
 }
 
@@ -3229,7 +3243,6 @@ impl Shr for Any {
 
 // macro
 #[macro_export]
-
 macro_rules! array {
     ($($x:expr),*) => {
         {
