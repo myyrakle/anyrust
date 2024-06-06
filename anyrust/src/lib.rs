@@ -14,6 +14,11 @@ use std::{
 
 use dyn_clone::{clone_trait_object, DynClone};
 
+/// shortcut function for creating any value
+pub fn any(value: impl Into<Any>) -> Any {
+    value.into()
+}
+
 /// any trait
 pub trait Anyable:
     std::any::Any + Send + Sync + std::fmt::Debug + DynClone + Display + AutoCast + DynClone
