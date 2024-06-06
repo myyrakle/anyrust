@@ -1,4 +1,5 @@
 #![allow(non_upper_case_globals)]
+#![allow(clippy::vec_init_then_push)]
 
 use std::{
     any::TypeId,
@@ -3241,7 +3242,6 @@ impl Shr for Any {
 
 // macro
 #[macro_export]
-
 macro_rules! array {
     ($($x:expr),*) => {
         {
