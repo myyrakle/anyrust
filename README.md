@@ -14,8 +14,8 @@ Below is a simple example.
 use anyrust::*;
 
 fn main() {
-    let a = Any::new(5);
-    let b = Any::new("10");
+    let a = any(5);
+    let b = any("10");
     let result = a + b;
 
     println!("result: {result}"); // result: 510
@@ -43,7 +43,7 @@ Arrays are supported through the `anyrust::Array` type. This is compatible with 
 
 KV Map is supported through the `anyrust::Map` type. This is compatible with `HashMap<Any,Any>`.
 ```rust
-    let mut map = Any::from(Map::new());
+    let mut map = any(Map::new());
     map.set("name", "John Doe");
     map.set("age", 30);
     map.set("is_adult", true);
@@ -67,7 +67,7 @@ Function types are provided through the `Function` type. You can easily create i
     println!("Result: {}", result);
 
     let four: Any = function!( => {
-        let sum = Any::from(4444);
+        let sum = any(4444);
         sum
     });
 
@@ -83,7 +83,7 @@ You can also use function composition through the >> operator.
     });
 
     let negative = function!(num => {
-        num * Any::from(-1)
+        num * any(-1)
     });
 
     let composite = add >> negative;
