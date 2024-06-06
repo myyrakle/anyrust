@@ -1,5 +1,6 @@
 #![allow(non_upper_case_globals)]
 #![allow(clippy::vec_init_then_push)]
+#![allow(clippy::if_same_then_else)]
 
 use std::{
     any::TypeId,
