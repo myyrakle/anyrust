@@ -7,7 +7,7 @@ fn main() {
     });
 
     let negative = function!(num => {
-        num * Any::from(-1)
+        num * any(-1)
     });
 
     let composite = add >> negative;
