@@ -3282,3 +3282,12 @@ macro_rules! function {
         }
     };
 }
+
+#[macro_export]
+macro_rules! pair {
+    ($key:expr, $value:expr) => {
+        {
+            anyrust::Any::from(anyrust::Pair::new(anyrust::Any::from($key), anyrust::Any::from($value)))
+        }
+    };
+}
