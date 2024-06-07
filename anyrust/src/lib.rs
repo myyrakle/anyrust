@@ -3294,3 +3294,17 @@ macro_rules! pair {
         }
     };
 }
+
+#[macro_export]
+macro_rules! map {
+    ($($key:expr => $value:expr),*) => {
+        {
+            let mut temp_map = std::collections::HashMap::new();
+            $(
+                temp_map.insert(anyrust::Any::from($key), anyrust::Any::from($value));
+            )*
+
+            anyrust::Any::from(anyrust::Map::from(temp_map))
+        }
+    };
+}
