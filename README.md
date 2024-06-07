@@ -45,7 +45,7 @@ KV Map is supported through the `anyrust::Map` type. This is compatible with `Ha
 ```rust
     let mut map = map!{
         "name" => "John Doe", 
-        "age" => 30
+        "age" => 30,
     };
     map.set("is_adult", true);
 

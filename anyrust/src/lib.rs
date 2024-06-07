@@ -3298,7 +3298,7 @@ macro_rules! pair {
 /// Create a new map
 #[macro_export]
 macro_rules! map {
-    ($($key:expr => $value:expr),*) => {
+    ($($key:expr => $value:expr),* $(,)?) => {
         {
             let mut temp_map = std::collections::HashMap::new();
             $(

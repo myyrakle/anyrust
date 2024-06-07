@@ -21,7 +21,7 @@ fn main() {
 
     let m = map!{
         "name" => "John",
-        "age" => 20
+        "age" => 20,
     };
     
     println!("Map: {}", m);
