@@ -43,9 +43,10 @@ Arrays are supported through the `anyrust::Array` type. This is compatible with 
 
 KV Map is supported through the `anyrust::Map` type. This is compatible with `HashMap<Any,Any>`.
 ```rust
-    let mut map = any(Map::new());
-    map.set("name", "John Doe");
-    map.set("age", 30);
+    let mut map = map!{
+        "name" => "John Doe", 
+        "age" => 30
+    };
     map.set("is_adult", true);
 
     println!("{}", map.to_string());
