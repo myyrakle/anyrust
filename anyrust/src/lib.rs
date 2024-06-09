@@ -2624,6 +2624,48 @@ impl Neg for Any {
     }
 }
 
+#[cfg(test)]
+mod test_neg_for_any {
+    use super::*;
+
+    #[test]
+    fn test_neg() {
+        struct TestCase {
+            name: String,
+            a: Any,
+            result: Any,
+        }
+
+        let test_cases = vec![
+            TestCase {
+                name: "i64".to_string(),
+                a: Any::new(5_i64),
+                result: Any::new(-5_i64),
+            },
+            TestCase {
+                name: "u64".to_string(),
+                a: Any::new(5_u64),
+                result: Any::new(-5_i64),
+            },
+            TestCase {
+                name: "f32".to_string(),
+                a: Any::new(5.0_f32),
+                result: Any::new(-5.0_f64),
+            },
+            TestCase {
+                name: "f64".to_string(),
+                a: Any::new(5.0),
+                result: Any::new(-5.0),
+            },
+        ];
+
+        for test_case in test_cases {
+            let result = -test_case.a;
+            assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
 impl Mul for Any {
     type Output = Self;
 
