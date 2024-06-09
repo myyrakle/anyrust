@@ -9,7 +9,8 @@ use std::{
     fmt::{Debug, Display},
     hash::Hash,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Not, Shr, Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shr, Sub,
+        SubAssign,
     },
     rc::Rc,
 };
@@ -79,7 +80,7 @@ impl Function {
     pub fn call(&self, args: Any) -> Any {
         let mut rc = self.f.clone();
         let borrowed = rc.borrow_mut();
-        
+
         borrowed(args)
     }
 
@@ -2577,6 +2578,94 @@ mod test_sub_for_any {
     }
 }
 
+impl Neg for Any {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        if self.type_id == *I8 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *I16 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *I32 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *I64 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *ISIZE {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *U8 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *U16 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *U32 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *U64 {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *USIZE {
+            let a = self.data.to_integer();
+            Any::new(-a)
+        } else if self.type_id == *F32 {
+            let a = self.data.to_float();
+            Any::new(-a)
+        } else if self.type_id == *F64 {
+            let a = self.data.to_float();
+            Any::new(-a)
+        } else {
+            Any::new(f64::NAN)
+        }
+    }
+}
+
+#[cfg(test)]
+mod test_neg_for_any {
+    use super::*;
+
+    #[test]
+    fn test_neg() {
+        struct TestCase {
+            name: String,
+            a: Any,
+            result: Any,
+        }
+
+        let test_cases = vec![
+            TestCase {
+                name: "i64".to_string(),
+                a: Any::new(5_i64),
+                result: Any::new(-5_i64),
+            },
+            TestCase {
+                name: "u64".to_string(),
+                a: Any::new(5_u64),
+                result: Any::new(-5_i64),
+            },
+            TestCase {
+                name: "f32".to_string(),
+                a: Any::new(5.0_f32),
+                result: Any::new(-5.0_f64),
+            },
+            TestCase {
+                name: "f64".to_string(),
+                a: Any::new(5.0),
+                result: Any::new(-5.0),
+            },
+        ];
+
+        for test_case in test_cases {
+            let result = -test_case.a;
+            assert_eq!(result, test_case.result, "TC: {}", test_case.name);
+        }
+    }
+}
+
 impl Mul for Any {
     type Output = Self;
 
@@ -3218,7 +3307,6 @@ impl IntoIterator for Map {
     type IntoIter = AnyPairIterator;
 
     fn into_iter(self) -> Self::IntoIter {
-        
         (Box::new(self.0.into_iter())) as _
     }
 }
@@ -3288,11 +3376,12 @@ macro_rules! function {
 /// Create a new pair
 #[macro_export]
 macro_rules! pair {
-    ($key:expr, $value:expr) => {
-        {
-            anyrust::Any::from(anyrust::Pair::new(anyrust::Any::from($key), anyrust::Any::from($value)))
-        }
-    };
+    ($key:expr, $value:expr) => {{
+        anyrust::Any::from(anyrust::Pair::new(
+            anyrust::Any::from($key),
+            anyrust::Any::from($value),
+        ))
+    }};
 }
 
 /// Create a new map
