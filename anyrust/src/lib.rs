@@ -1739,7 +1739,7 @@ impl Any {
     }
 }
 
-// type cast functions
+/// Implements type conversion functionality for primitive types.
 impl Any {
     pub fn to_integer(&self) -> i64 {
         self.data.to_integer()
