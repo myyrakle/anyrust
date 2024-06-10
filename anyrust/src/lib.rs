@@ -496,7 +496,7 @@ pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
 }
 
-// Trait for casting: Defines how to convert when cast to a function.
+/// Trait for casting: Defines how to convert when cast to a function.
 pub trait ToFunction {
     fn to_function(&self) -> Function {
         Function::new(|_| Any::from(_null), 0)
