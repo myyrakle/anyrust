@@ -3455,6 +3455,16 @@ macro_rules! function {
 }
 
 /// Create a new pair
+///
+/// This provides a shortcut to creating a Pair object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let pair = pair!(1, 2);
+assert_eq!(Any::from(Pair::new(1,2)), pair);
+```
+*/
 #[macro_export]
 macro_rules! pair {
     ($key:expr, $value:expr) => {{
