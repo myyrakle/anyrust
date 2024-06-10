@@ -2090,14 +2090,16 @@ mod test_type_check_for_any {
     }
 }
 
-// array operations
+/// Implements basic behavior for Array objects.
 impl Any {
+    /// Adds a value to the end of the array.
     pub fn push(&mut self, value: impl Into<Any>) {
         if self.is_array() {
             self.data.to_array_mut().push(value.into())
         }
     }
 
+    /// Removes the last element from the array and returns it.
     pub fn pop(&mut self) -> Option<Any> {
         if self.is_array() {
             self.data.to_array_mut().pop()
@@ -2106,12 +2108,14 @@ impl Any {
         }
     }
 
+    /// Adds a value to the beginning of the array.
     pub fn unshift(&mut self, value: impl Into<Any>) {
         if self.is_array() {
             self.data.to_array_mut().unshift(value.into())
         }
     }
 
+    /// Removes the first element from the array and returns it.
     pub fn shift(&mut self) -> Option<Any> {
         if self.is_array() {
             self.data.to_array_mut().shift()
@@ -2120,6 +2124,7 @@ impl Any {
         }
     }
 
+    /// Reverses the array.
     pub fn reverse(&mut self) -> Any {
         if self.is_array() {
             self.data.to_array_mut().reverse().clone().into()
