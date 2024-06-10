@@ -3374,6 +3374,21 @@ impl Shr for Any {
 }
 
 /// Create a new array
+///
+/// Usage is similar to the `vec!` macro.
+/// Each element is auto-boxed as any, and the final return value is also any.
+/**
+ ```rust
+use anyrust::*;
+let mut arr = array![1, 2, 3, 4, 5];
+arr.push(4444);
+arr.push("foo");
+
+for e in arr {
+    println!("{e}");
+}
+ ```
+ */
 #[macro_export]
 macro_rules! array {
     ($($x:expr),*) => {
