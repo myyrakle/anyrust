@@ -2171,8 +2171,9 @@ impl Any {
     }
 }
 
-// common operations
+/// Implements basic behavior for Collection objects.
 impl Any {
+    /// Returns the length of the collection.
     pub fn length(&self) -> Any {
         if self.is_array() {
             self.data.to_array().length().into()
@@ -2185,6 +2186,7 @@ impl Any {
         }
     }
 
+    /// Returns true if the collection is empty.
     pub fn is_empty(&self) -> Any {
         if self.is_array() {
             self.data.to_array().is_empty().into()
