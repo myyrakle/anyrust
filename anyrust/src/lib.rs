@@ -1622,6 +1622,21 @@ impl ToFunction for Function {
 }
 
 /// type for all
+///
+/// You can use this to box and save almost any type.
+/// It implements all the basic operators or behavior for basic collection types.
+/// Because it operates based on dynamic types, you can observe humorous and witty phenomena.
+/**
+```
+use anyrust::*;
+
+let a: Any = any(5);
+let b = any("10");
+let result = a + b;
+
+println!("result: {result}"); // result: 510
+```
+*/
 #[derive(Debug)]
 pub struct Any {
     type_id: std::any::TypeId,
