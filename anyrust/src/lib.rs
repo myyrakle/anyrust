@@ -2896,6 +2896,11 @@ impl Div for Any {
                     let b = other.data.to_integer();
                     Any::new(a / b)
                 }
+                type_id if type_id == *ISIZE => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a / b)
+                }
                 type_id if type_id == *U8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
@@ -2912,6 +2917,11 @@ impl Div for Any {
                     Any::new(a / b)
                 }
                 type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a / b)
+                }
+                type_id if type_id == *USIZE => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a / b)
