@@ -1652,7 +1652,9 @@ impl Clone for Any {
     }
 }
 
+/// Implements basic behavior common to all types.
 impl Any {
+    /// Create a new Any type.
     pub fn new<T>(value: T) -> Self
     where
         T: Anyable,
@@ -1663,6 +1665,7 @@ impl Any {
         }
     }
 
+    /// Returns the TypeId of the stored value.
     pub fn type_id(&self) -> TypeId {
         self.type_id
     }
