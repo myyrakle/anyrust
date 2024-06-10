@@ -1747,6 +1747,11 @@ impl Any {
     pub fn is_function(&self) -> bool {
         self.type_id == *FUNCTION
     }
+
+    /// Returns true if the type is a pair.
+    pub fn is_pair(&self) -> bool {
+        self.type_id == *PAIR
+    }
 }
 
 /// Implements type conversion functionality for primitive types.
