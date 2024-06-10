@@ -2200,8 +2200,11 @@ impl Any {
     }
 }
 
-// function operations
+/// function operations
 impl Any {
+    /// Calls the function with the specified arguments.
+    ///
+    /// The first argument must be an Array object value.
     pub fn call(&self, args: Any) -> Any {
         if self.is_function() {
             self.data.to_function().call(args)
