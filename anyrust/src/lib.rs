@@ -2134,14 +2134,16 @@ impl Any {
     }
 }
 
-// map operations
+/// Implements basic behavior for Map objects.
 impl Any {
+    /// Sets a key-value pair in the map.
     pub fn set(&mut self, key: impl Into<Any>, value: impl Into<Any>) {
         if self.is_map() {
             self.data.to_map_mut().0.insert(key.into(), value.into());
         }
     }
 
+    /// Gets a value from the map.
     pub fn get(&self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
@@ -2155,6 +2157,7 @@ impl Any {
         }
     }
 
+    /// Deletes a key-value pair from the map.
     pub fn delete(&mut self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
