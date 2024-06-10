@@ -2208,6 +2208,7 @@ lazy_static::lazy_static! {
     pub(crate) static ref MAP: TypeId = TypeId::of::<Map>();
     pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
     pub(crate) static ref FUNCTION: TypeId = TypeId::of::<Function>();
+    pub(crate) static ref PAIR: TypeId = TypeId::of::<Pair>();
 
     /// value of Null type
     pub static ref null: Any = Any::new(_null);
