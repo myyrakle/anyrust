@@ -2181,7 +2181,7 @@ lazy_static::lazy_static! {
     pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
     pub(crate) static ref FUNCTION: TypeId = TypeId::of::<Function>();
 
-    /// null value
+    /// value of Null type
     pub static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
@@ -3404,6 +3404,7 @@ macro_rules! array {
 }
 
 /// Create a new params array (same as array! macro)
+///
 pub use array as params;
 
 /// Create a new function
