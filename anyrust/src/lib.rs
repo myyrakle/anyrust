@@ -1756,34 +1756,42 @@ impl Any {
 
 /// Implements type conversion functionality for primitive types.
 impl Any {
+    /// Converts the type to an integer.
     pub fn to_integer(&self) -> i64 {
         self.data.to_integer()
     }
 
+    /// Converts the type to a float.
     pub fn to_float(&self) -> f64 {
         self.data.to_float()
     }
 
+    /// Converts the type to a string.
     pub fn to_str(&self) -> String {
         self.data.to_str()
     }
 
+    /// Converts the type to an array.
     pub fn to_array(&self) -> Array {
         self.data.to_array()
     }
 
+    /// Converts the type to a map.
     pub fn to_map(&self) -> Map {
         self.data.to_map()
     }
 
+    /// Converts the type to a boolean.
     pub fn to_boolean(&self) -> bool {
         self.data.to_boolean()
     }
 
+    /// Converts the type to a pair.
     pub fn to_pair(&self) -> Pair {
         self.data.to_pair()
     }
 
+    /// Converts the type to a function.
     pub fn to_function(&self) -> Function {
         self.data.to_function()
     }
