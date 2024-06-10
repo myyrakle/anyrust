@@ -3476,6 +3476,22 @@ macro_rules! pair {
 }
 
 /// Create a new map
+///
+/// This provides a shortcut to creating a Map object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let map = map!{
+    "foo" => 1,
+    "bar" => 2,
+    "baz" => 3,
+};
+
+let result = map[any("foo")].clone();
+assert_eq!(result, Any::from(1));
+```
+*/
 #[macro_export]
 macro_rules! map {
     ($($key:expr => $value:expr),* $(,)?) => {
