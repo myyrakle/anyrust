@@ -3407,6 +3407,28 @@ macro_rules! array {
 pub use array as params;
 
 /// Create a new function
+///
+/// This provides a shortcut to creating a Function object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let add = function!(lhs, rhs => {
+    lhs + rhs
+});
+
+let result = add.call(array![1, 2]);
+println!("Result: {}", result);
+
+let four: Any = function!( => {
+    let sum = any(4444);
+    sum
+});
+
+let result = four.call(array![]);
+println!("Result: {}", result);
+```
+ */
 #[macro_export]
 macro_rules! function {
     ($($arg:ident),* => $body:block) => {
