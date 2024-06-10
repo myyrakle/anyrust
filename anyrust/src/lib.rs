@@ -2215,6 +2215,11 @@ impl Add for Any {
                     let b = other.data.to_integer();
                     Any::new(a + b)
                 }
+                type_id if type_id == *ISIZE => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
                 type_id if type_id == *U8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
@@ -2231,6 +2236,11 @@ impl Add for Any {
                     Any::new(a + b)
                 }
                 type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a + b)
+                }
+                type_id if type_id == *USIZE => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a + b)
@@ -2434,6 +2444,11 @@ impl Sub for Any {
                     let b = other.data.to_integer();
                     Any::new(a - b)
                 }
+                type_id if type_id == *ISIZE => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a - b)
+                }
                 type_id if type_id == *U8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
@@ -2450,6 +2465,11 @@ impl Sub for Any {
                     Any::new(a - b)
                 }
                 type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a - b)
+                }
+                type_id if type_id == *USIZE => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a - b)
@@ -2694,6 +2714,11 @@ impl Mul for Any {
                     let b = other.data.to_integer();
                     Any::new(a * b)
                 }
+                type_id if type_id == *ISIZE => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
                 type_id if type_id == *U8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
@@ -2710,6 +2735,11 @@ impl Mul for Any {
                     Any::new(a * b)
                 }
                 type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a * b)
+                }
+                type_id if type_id == *USIZE => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a * b)
@@ -2866,6 +2896,11 @@ impl Div for Any {
                     let b = other.data.to_integer();
                     Any::new(a / b)
                 }
+                type_id if type_id == *ISIZE => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a / b)
+                }
                 type_id if type_id == *U8 => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
@@ -2882,6 +2917,11 @@ impl Div for Any {
                     Any::new(a / b)
                 }
                 type_id if type_id == *U64 => {
+                    let a = self.data.to_integer();
+                    let b = other.data.to_integer();
+                    Any::new(a / b)
+                }
+                type_id if type_id == *USIZE => {
                     let a = self.data.to_integer();
                     let b = other.data.to_integer();
                     Any::new(a / b)
@@ -3075,10 +3115,12 @@ impl PartialEq for Any {
                 type_id if type_id == *I16 => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *I32 => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *I64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *ISIZE => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *U8 => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *U16 => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *U32 => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *U64 => self.data.to_integer() == other.data.to_integer(),
+                type_id if type_id == *USIZE => self.data.to_integer() == other.data.to_integer(),
                 type_id if type_id == *F32 => self.data.to_float() == other.data.to_float(),
                 type_id if type_id == *F64 => self.data.to_float() == other.data.to_float(),
                 type_id if type_id == *STRING => self.data.to_string() == other.data.to_string(),
@@ -3154,10 +3196,12 @@ impl Hash for Any {
             type_id if type_id == *I16 => self.data.to_integer().hash(state),
             type_id if type_id == *I32 => self.data.to_integer().hash(state),
             type_id if type_id == *I64 => self.data.to_integer().hash(state),
+            type_id if type_id == *ISIZE => self.data.to_integer().hash(state),
             type_id if type_id == *U8 => self.data.to_integer().hash(state),
             type_id if type_id == *U16 => self.data.to_integer().hash(state),
             type_id if type_id == *U32 => self.data.to_integer().hash(state),
             type_id if type_id == *U64 => self.data.to_integer().hash(state),
+            type_id if type_id == *USIZE => self.data.to_integer().hash(state),
             type_id if type_id == *F32 => self.data.to_float().to_bits().hash(state),
             type_id if type_id == *F64 => self.data.to_float().to_bits().hash(state),
             type_id if type_id == *STRING => self.data.to_string().hash(state),
