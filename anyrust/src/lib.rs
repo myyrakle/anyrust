@@ -1687,7 +1687,7 @@ impl Any {
     // }
 }
 
-// type check functions
+/// Implements type checking for primitive types.
 impl Any {
     pub fn is_integer(&self) -> bool {
         self.type_id == *I8
