@@ -1689,6 +1689,7 @@ impl Any {
 
 /// Implements type checking for primitive types.
 impl Any {
+    /// Returns true if the type is an integer.
     pub fn is_integer(&self) -> bool {
         self.type_id == *I8
             || self.type_id == *I16
@@ -1702,38 +1703,47 @@ impl Any {
             || self.type_id == *USIZE
     }
 
+    /// Returns true if the type is a float.
     pub fn is_float(&self) -> bool {
         self.type_id == *F32 || self.type_id == *F64
     }
 
+    /// Returns true if the type is a number.
     pub fn is_number(&self) -> bool {
         self.is_integer() || self.is_float()
     }
 
+    /// Returns true if the type is NaN.
     pub fn is_nan(&self) -> bool {
         self.is_float() && self.data.to_float().is_nan()
     }
 
+    /// Returns true if the type is a string.
     pub fn is_string(&self) -> bool {
         self.type_id == *STRING || self.type_id == *STR
     }
 
+    /// Returns true if the type is an array.
     pub fn is_array(&self) -> bool {
         self.type_id == *ARRAY
     }
 
+    /// Returns true if the type is a map.
     pub fn is_map(&self) -> bool {
         self.type_id == *MAP
     }
 
+    /// Returns true if the type is null.
     pub fn is_null(&self) -> bool {
         self.type_id == *NULL
     }
 
+    /// Returns true if the type is a boolean.
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
     }
 
+    /// Returns true if the type is a function.
     pub fn is_function(&self) -> bool {
         self.type_id == *FUNCTION
     }
