@@ -496,7 +496,7 @@ pub trait ToBoolean {
     fn to_boolean(&self) -> bool;
 }
 
-// Trait for casting: Defines how to convert when cast to a function.
+/// Trait for casting: Defines how to convert when cast to a function.
 pub trait ToFunction {
     fn to_function(&self) -> Function {
         Function::new(|_| Any::from(_null), 0)
@@ -1622,6 +1622,21 @@ impl ToFunction for Function {
 }
 
 /// type for all
+///
+/// You can use this to box and save almost any type.
+/// It implements all the basic operators or behavior for basic collection types.
+/// Because it operates based on dynamic types, you can observe humorous and witty phenomena.
+/**
+```
+use anyrust::*;
+
+let a: Any = any(5);
+let b = any("10");
+let result = a + b;
+
+println!("result: {result}"); // result: 510
+```
+*/
 #[derive(Debug)]
 pub struct Any {
     type_id: std::any::TypeId,
@@ -1637,7 +1652,9 @@ impl Clone for Any {
     }
 }
 
+/// Implements basic behavior common to all types.
 impl Any {
+    /// Create a new Any type.
     pub fn new<T>(value: T) -> Self
     where
         T: Anyable,
@@ -1648,6 +1665,7 @@ impl Any {
         }
     }
 
+    /// Returns the TypeId of the stored value.
     pub fn type_id(&self) -> TypeId {
         self.type_id
     }
@@ -1669,8 +1687,9 @@ impl Any {
     // }
 }
 
-// type check functions
+/// Implements type checking for primitive types.
 impl Any {
+    /// Returns true if the type is an integer.
     pub fn is_integer(&self) -> bool {
         self.type_id == *I8
             || self.type_id == *I16
@@ -1684,73 +1703,95 @@ impl Any {
             || self.type_id == *USIZE
     }
 
+    /// Returns true if the type is a float.
     pub fn is_float(&self) -> bool {
         self.type_id == *F32 || self.type_id == *F64
     }
 
+    /// Returns true if the type is a number.
     pub fn is_number(&self) -> bool {
         self.is_integer() || self.is_float()
     }
 
+    /// Returns true if the type is NaN.
     pub fn is_nan(&self) -> bool {
         self.is_float() && self.data.to_float().is_nan()
     }
 
+    /// Returns true if the type is a string.
     pub fn is_string(&self) -> bool {
         self.type_id == *STRING || self.type_id == *STR
     }
 
+    /// Returns true if the type is an array.
     pub fn is_array(&self) -> bool {
         self.type_id == *ARRAY
     }
 
+    /// Returns true if the type is a map.
     pub fn is_map(&self) -> bool {
         self.type_id == *MAP
     }
 
+    /// Returns true if the type is null.
     pub fn is_null(&self) -> bool {
         self.type_id == *NULL
     }
 
+    /// Returns true if the type is a boolean.
     pub fn is_boolean(&self) -> bool {
         self.type_id == *BOOL
     }
 
+    /// Returns true if the type is a function.
     pub fn is_function(&self) -> bool {
         self.type_id == *FUNCTION
     }
+
+    /// Returns true if the type is a pair.
+    pub fn is_pair(&self) -> bool {
+        self.type_id == *PAIR
+    }
 }
 
-// type cast functions
+/// Implements type conversion functionality for primitive types.
 impl Any {
+    /// Converts the type to an integer.
     pub fn to_integer(&self) -> i64 {
         self.data.to_integer()
     }
 
+    /// Converts the type to a float.
     pub fn to_float(&self) -> f64 {
         self.data.to_float()
     }
 
+    /// Converts the type to a string.
     pub fn to_str(&self) -> String {
         self.data.to_str()
     }
 
+    /// Converts the type to an array.
     pub fn to_array(&self) -> Array {
         self.data.to_array()
     }
 
+    /// Converts the type to a map.
     pub fn to_map(&self) -> Map {
         self.data.to_map()
     }
 
+    /// Converts the type to a boolean.
     pub fn to_boolean(&self) -> bool {
         self.data.to_boolean()
     }
 
+    /// Converts the type to a pair.
     pub fn to_pair(&self) -> Pair {
         self.data.to_pair()
     }
 
+    /// Converts the type to a function.
     pub fn to_function(&self) -> Function {
         self.data.to_function()
     }
@@ -2049,14 +2090,16 @@ mod test_type_check_for_any {
     }
 }
 
-// array operations
+/// Implements basic behavior for Array objects.
 impl Any {
+    /// Adds a value to the end of the array.
     pub fn push(&mut self, value: impl Into<Any>) {
         if self.is_array() {
             self.data.to_array_mut().push(value.into())
         }
     }
 
+    /// Removes the last element from the array and returns it.
     pub fn pop(&mut self) -> Option<Any> {
         if self.is_array() {
             self.data.to_array_mut().pop()
@@ -2065,12 +2108,14 @@ impl Any {
         }
     }
 
+    /// Adds a value to the beginning of the array.
     pub fn unshift(&mut self, value: impl Into<Any>) {
         if self.is_array() {
             self.data.to_array_mut().unshift(value.into())
         }
     }
 
+    /// Removes the first element from the array and returns it.
     pub fn shift(&mut self) -> Option<Any> {
         if self.is_array() {
             self.data.to_array_mut().shift()
@@ -2079,6 +2124,7 @@ impl Any {
         }
     }
 
+    /// Reverses the array.
     pub fn reverse(&mut self) -> Any {
         if self.is_array() {
             self.data.to_array_mut().reverse().clone().into()
@@ -2088,14 +2134,16 @@ impl Any {
     }
 }
 
-// map operations
+/// Implements basic behavior for Map objects.
 impl Any {
+    /// Sets a key-value pair in the map.
     pub fn set(&mut self, key: impl Into<Any>, value: impl Into<Any>) {
         if self.is_map() {
             self.data.to_map_mut().0.insert(key.into(), value.into());
         }
     }
 
+    /// Gets a value from the map.
     pub fn get(&self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
@@ -2109,6 +2157,7 @@ impl Any {
         }
     }
 
+    /// Deletes a key-value pair from the map.
     pub fn delete(&mut self, key: impl Into<Any>) -> Any {
         if self.is_map() {
             self.data
@@ -2122,8 +2171,9 @@ impl Any {
     }
 }
 
-// common operations
+/// Implements basic behavior for Collection objects.
 impl Any {
+    /// Returns the length of the collection.
     pub fn length(&self) -> Any {
         if self.is_array() {
             self.data.to_array().length().into()
@@ -2136,6 +2186,7 @@ impl Any {
         }
     }
 
+    /// Returns true if the collection is empty.
     pub fn is_empty(&self) -> Any {
         if self.is_array() {
             self.data.to_array().is_empty().into()
@@ -2149,8 +2200,11 @@ impl Any {
     }
 }
 
-// function operations
+/// function operations
 impl Any {
+    /// Calls the function with the specified arguments.
+    ///
+    /// The first argument must be an Array object value.
     pub fn call(&self, args: Any) -> Any {
         if self.is_function() {
             self.data.to_function().call(args)
@@ -2180,8 +2234,9 @@ lazy_static::lazy_static! {
     pub(crate) static ref MAP: TypeId = TypeId::of::<Map>();
     pub(crate) static ref NULL: TypeId = TypeId::of::<Null>();
     pub(crate) static ref FUNCTION: TypeId = TypeId::of::<Function>();
+    pub(crate) static ref PAIR: TypeId = TypeId::of::<Pair>();
 
-    /// null value
+    /// value of Null type
     pub static ref null: Any = Any::new(_null);
     static ref EMPTY_ARRAY: Array = Array(vec![]);
     static ref EMPTY_MAP: Map = Map(HashMap::new());
@@ -3374,6 +3429,21 @@ impl Shr for Any {
 }
 
 /// Create a new array
+///
+/// Usage is similar to the `vec!` macro.
+/// Each element is auto-boxed as any, and the final return value is also any.
+/**
+ ```rust
+use anyrust::*;
+let mut arr = array![1, 2, 3, 4, 5];
+arr.push(4444);
+arr.push("foo");
+
+for e in arr {
+    println!("{e}");
+}
+ ```
+ */
 #[macro_export]
 macro_rules! array {
     ($($x:expr),*) => {
@@ -3389,9 +3459,32 @@ macro_rules! array {
 }
 
 /// Create a new params array (same as array! macro)
+///
 pub use array as params;
 
 /// Create a new function
+///
+/// This provides a shortcut to creating a Function object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let add = function!(lhs, rhs => {
+    lhs + rhs
+});
+
+let result = add.call(array![1, 2]);
+println!("Result: {}", result);
+
+let four: Any = function!( => {
+    let sum = any(4444);
+    sum
+});
+
+let result = four.call(array![]);
+println!("Result: {}", result);
+```
+ */
 #[macro_export]
 macro_rules! function {
     ($($arg:ident),* => $body:block) => {
@@ -3418,6 +3511,16 @@ macro_rules! function {
 }
 
 /// Create a new pair
+///
+/// This provides a shortcut to creating a Pair object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let pair = pair!(1, 2);
+assert_eq!(Any::from(Pair::new(1,2)), pair);
+```
+*/
 #[macro_export]
 macro_rules! pair {
     ($key:expr, $value:expr) => {{
@@ -3429,6 +3532,22 @@ macro_rules! pair {
 }
 
 /// Create a new map
+///
+/// This provides a shortcut to creating a Map object via macro expansion.
+/**
+```rust
+use anyrust::*;
+
+let map = map!{
+    "foo" => 1,
+    "bar" => 2,
+    "baz" => 3,
+};
+
+let result = map[any("foo")].clone();
+assert_eq!(result, Any::from(1));
+```
+*/
 #[macro_export]
 macro_rules! map {
     ($($key:expr => $value:expr),* $(,)?) => {
