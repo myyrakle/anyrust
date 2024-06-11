@@ -3434,6 +3434,34 @@ impl ShrAssign for Any {
     }
 }
 
+#[cfg(test)]
+mod test_shr_for_any {
+    use super::*;
+
+    #[test]
+    fn test_shr() {
+        let a = Any::new(8);
+        let b = Any::new(2);
+        assert_eq!(a >> b, Any::new(2_i64));
+
+        let a = Any::new(8);
+        let b = Any::new(3);
+        assert_eq!(a >> b, Any::new(1_i64));
+
+        let a = Any::new(8);
+        let b = Any::new(4);
+        assert_eq!(a >> b, Any::new(0_i64));
+    }
+
+    #[test]
+    fn test_shr_assign() {
+        let mut a = Any::new(8);
+        let b = Any::new(2);
+        a >>= b;
+        assert_eq!(a, Any::new(2_i64));
+    }
+}
+
 /// Create a new array
 ///
 /// Usage is similar to the `vec!` macro.
