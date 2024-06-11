@@ -9,8 +9,8 @@ use std::{
     fmt::{Debug, Display},
     hash::Hash,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shl, Shr,
-        ShrAssign, Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shl, ShlAssign,
+        Shr, ShrAssign, Sub, SubAssign,
     },
     rc::Rc,
 };
@@ -3473,6 +3473,12 @@ impl Shl for Any {
             let b = other.data.to_integer();
             Any::new(a << b)
         }
+    }
+}
+
+impl ShlAssign for Any {
+    fn shl_assign(&mut self, other: Self) {
+        *self = self.clone() << other;
     }
 }
 
