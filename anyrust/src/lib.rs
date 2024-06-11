@@ -9,8 +9,8 @@ use std::{
     fmt::{Debug, Display},
     hash::Hash,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shr, ShrAssign,
-        Sub, SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shl, Shr,
+        ShrAssign, Sub, SubAssign,
     },
     rc::Rc,
 };
@@ -3459,6 +3459,20 @@ mod test_shr_for_any {
         let b = Any::new(2);
         a >>= b;
         assert_eq!(a, Any::new(2_i64));
+    }
+}
+
+impl Shl for Any {
+    type Output = Any;
+
+    fn shl(self, other: Self) -> Self {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(_null)
+        } else {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a << b)
+        }
     }
 }
 
