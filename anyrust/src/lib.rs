@@ -9,8 +9,8 @@ use std::{
     fmt::{Debug, Display},
     hash::Hash,
     ops::{
-        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shr, Sub,
-        SubAssign,
+        Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Not, Shl, ShlAssign,
+        Shr, ShrAssign, Sub, SubAssign,
     },
     rc::Rc,
 };
@@ -3425,6 +3425,88 @@ impl Shr for Any {
             let b = other.data.to_integer();
             Any::new(a >> b)
         }
+    }
+}
+
+impl ShrAssign for Any {
+    fn shr_assign(&mut self, other: Self) {
+        *self = self.clone() >> other;
+    }
+}
+
+#[cfg(test)]
+mod test_shr_for_any {
+    use super::*;
+
+    #[test]
+    fn test_shr() {
+        let a = Any::new(8);
+        let b = Any::new(2);
+        assert_eq!(a >> b, Any::new(2_i64));
+
+        let a = Any::new(8);
+        let b = Any::new(3);
+        assert_eq!(a >> b, Any::new(1_i64));
+
+        let a = Any::new(8);
+        let b = Any::new(4);
+        assert_eq!(a >> b, Any::new(0_i64));
+    }
+
+    #[test]
+    fn test_shr_assign() {
+        let mut a = Any::new(8);
+        let b = Any::new(2);
+        a >>= b;
+        assert_eq!(a, Any::new(2_i64));
+    }
+}
+
+impl Shl for Any {
+    type Output = Any;
+
+    fn shl(self, other: Self) -> Self {
+        if self.type_id == *NULL || other.type_id == *NULL {
+            Any::new(_null)
+        } else {
+            let a = self.data.to_integer();
+            let b = other.data.to_integer();
+            Any::new(a << b)
+        }
+    }
+}
+
+impl ShlAssign for Any {
+    fn shl_assign(&mut self, other: Self) {
+        *self = self.clone() << other;
+    }
+}
+
+#[cfg(test)]
+mod test_shl_for_any {
+    use super::*;
+
+    #[test]
+    fn test_shl() {
+        let a = Any::new(1);
+        let b = Any::new(2);
+        assert_eq!(a << b, Any::new(4_i64));
+
+        let a = Any::new(1);
+        let b = Any::new(3);
+        assert_eq!(a << b, Any::new(8_i64));
+
+        let a = Any::new(1);
+        let b = Any::new(4);
+        assert_eq!(a << b, Any::new(16_i64));
+    }
+
+    #[test]
+    fn test_shl_assign() {
+        let mut a = Any::new(1);
+        let b = Any::new(2);
+        a <<= b;
+        assert_eq!(a, Any::new(4_i64));
     }
 }
 
